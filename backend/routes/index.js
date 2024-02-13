@@ -14,6 +14,10 @@ router.get("/api/csrf/restore", (req, res) => {
     });
 });
 
+router.get("/", (req, res) => {
+    return res.send('This is a test route for Render!');
+})
+
 
 
 
