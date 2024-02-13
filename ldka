@@ -1,0 +1,9 @@
+  auth-setup[m
+  dev[m
+  get-session[m
+  login[m
+  logout[m
+* [32mmain[m
+  signup[m
+  validate-login-inputs[m
+  validate-signup-inputs[m
