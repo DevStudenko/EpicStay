@@ -18,15 +18,19 @@ module.exports = {
       },
       address: {
         type: Sequelize.TEXT,
+        allowNull: false
       },
       state: {
         type: Sequelize.TEXT,
+        allowNull: false
       },
       city: {
         type: Sequelize.TEXT,
+        allowNull: false
       },
       country: {
         type: Sequelize.TEXT,
+        allowNull: false
       },
       lat: {
         type: Sequelize.DECIMAL
