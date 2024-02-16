@@ -10,88 +10,49 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Spot.belongsTo(models.User, {
+        foreignKey: 'ownerId'
+      });
+
+      Spot.hasMany(models.Booking, {
+        foreignKey: 'spotId'
+      });
+
+      Spot.hasMany(models.SpotImage, {
+        foreignKey: 'spotId'
+      });
     }
   }
   Spot.init({
     ownerId: {
-      type: DataTypes.INTEGER,
-      validate: {
-        isNumeric: true,
-        isInt: true,
-        notNull: true,
-        notEmpty: true
-      }
+      type: DataTypes.INTEGER
     },
     address: {
-      type: DataTypes.TEXT,
-      validate: {
-        notNull: true,
-        notEmpty: true,
-        len: [5, 80]
-      }
+      type: DataTypes.TEXT
     },
     state: {
-      type: DataTypes.TEXT,
-      validate: {
-        isAlpha: true,
-        len: [2, 30],
-        notEmpty: true,
-        notNull: true
-      }
+      type: DataTypes.TEXT
     },
     city: {
-      type: DataTypes.TEXT,
-      validate: {
-        isAlpha: true,
-        len: [5, 30],
-        notEmpty: true,
-        notNull: true
-      }
+      type: DataTypes.TEXT
     },
     country: {
-      type: DataTypes.TEXT,
-      validate: {
-        isAlpha: true,
-        len: [3, 30],
-        notNull: true,
-        notEmpty: true
-      }
+      type: DataTypes.TEXT
     },
     lat: {
-      type: DataTypes.DECIMAL,
-      validate: {
-        isDecimal: true
-      }
+      type: DataTypes.DECIMAL
     },
     lng: {
-      type: DataTypes.DECIMAL,
-      validate: {
-        isDecimal: true
-      }
+      type: DataTypes.DECIMAL
     },
     name: {
-      type: DataTypes.TEXT,
-      validate: {
-        isAlpha: true,
-        len: [3, 50]
-      }
+      type: DataTypes.TEXT
     },
     description: {
-      type: DataTypes.TEXT,
-      validate: {
-        notEmpty: true,
-        notNull: true
-      }
+      type: DataTypes.TEXT
     },
     price: {
-      type: DataTypes.DECIMAL,
-      validate: {
-        notNull: true,
-        notEmpty: true,
-        isNumeric: true,
-        isDecimal: true
-      }
+      type: DataTypes.DECIMAL
     }
   }, {
     sequelize,
