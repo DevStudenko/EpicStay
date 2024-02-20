@@ -18,7 +18,11 @@ module.exports = {
         type: Sequelize.BOOLEAN
       },
       spotId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Spots",
+          key: 'id'
+        }
       },
       url: {
         type: Sequelize.TEXT
