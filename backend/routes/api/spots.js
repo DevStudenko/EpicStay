@@ -1,22 +1,42 @@
 const express = require('express');
 const router = express.Router();
-const { Spot } = require('../../db/models');
-const { SpotImage } = require('../../db/models');
+const { Spot, SpotImage, Review } = require('../../db/models');
+
+
 
 router.get('/', async (req, res, next) => {
     const spots = await Spot.findAll({
-        include: {
-            model: SpotImage
-        }
+        include: [
+            {
+                model: SpotImage
+            },
+            {
+                model: Review
+            }
+        ]
     });
-    let spotObj;
-    spots.forEach(spot => {
-        spotObj = spot.toJSON();
-        spotObj.previewImage = spotObj.SpotImages[0].url;
-        delete spotObj.SpotImages;
-    })
 
-    return res.json(spotObj);
+    let modifiedSpots = []; // Array to store modified spot objects
+
+    spots.forEach(spot => {
+        let spotObj = spot.toJSON();
+        let count = spotObj.Reviews.length;
+        let total = 0; // Reset total for each spot
+
+        for (let review of spotObj.Reviews) {
+            total += review.stars;
+        }
+
+        spotObj.avgRating = count > 0 ? total / count : 0; // Handle case where count is 0
+        spotObj.previewImage = spotObj.SpotImages[0] ? spotObj.SpotImages[0].url : null; // Handle case where there are no images
+        delete spotObj.Reviews;
+        delete spotObj.SpotImages;
+
+        modifiedSpots.push(spotObj); // Add modified spot object to the array
+    });
+
+    return res.json(modifiedSpots); // Return the array of modified spot objects
 });
+
 
 module.exports = router;
