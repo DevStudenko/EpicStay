@@ -40,11 +40,11 @@ router.get('/', async (req, res, next) => {
 });
 
 
-router.get('/current', requireAuth, (req, res, next) => {
+router.get('/current', requireAuth, async (req, res, next) => {
     const currentUserId = req.user.dataValues.id;
-    const spots = Spot.findAll({
+    const spots = await Spot.findAll({
         where: {
-            ownerId: currentUserId
+            ownerId: parseInt(currentUserId)
         },
         include: [
             {
@@ -56,25 +56,25 @@ router.get('/current', requireAuth, (req, res, next) => {
         ]
     });
 
-    // let modifiedSpots = []; // Array to store modified spot objects
+    let modifiedSpots = []; // Array to store modified spot objects
 
-    // spots.forEach(spot => {
-    //     let spotObj = spot.toJSON();
-    //     let count = spotObj.Reviews.length;
-    //     let total = 0; // Reset total for each spot
+    spots.forEach(spot => {
+        let spotObj = spot.toJSON();
+        let count = spotObj.Reviews.length;
+        let total = 0; // Reset total for each spot
 
-    //     for (let review of spotObj.Reviews) {
-    //         total += review.stars;
-    //     }
+        for (let review of spotObj.Reviews) {
+            total += review.stars;
+        }
 
-    //     spotObj.avgRating = count > 0 ? total / count : 0; // Handle case where count is 0
-    //     spotObj.previewImage = spotObj.SpotImages[0] ? spotObj.SpotImages[0].url : null; // Handle case where there are no images
-    //     delete spotObj.Reviews;
-    //     delete spotObj.SpotImages;
+        spotObj.avgRating = count > 0 ? total / count : 0; // Handle case where count is 0
+        spotObj.previewImage = spotObj.SpotImages[0] ? spotObj.SpotImages[0].url : null; // Handle case where there are no images
+        delete spotObj.Reviews;
+        delete spotObj.SpotImages;
 
-    //     modifiedSpots.push(spotObj); // Add modified spot object to the array
-    // });
-    return res.json(spots);
+        modifiedSpots.push(spotObj); // Add modified spot object to the array
+    });
+    return res.json(modifiedSpots);
 })
 
 

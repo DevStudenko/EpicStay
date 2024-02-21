@@ -31,6 +31,13 @@ module.exports = {
         firstName: 'FakeFirstName3',
         lastName: 'fakeLastName3',
         hashedPassword: bcrypt.hashSync('password3')
+      },
+      {
+        email: 'dstudenko@gmail.com',
+        username: 'dstudenko',
+        firstName: 'Denis',
+        lastName: 'Studenko',
+        hashedPassword: bcrypt.hashSync('27luu3ir9g')
       }
     ], { validate: true });
   },
