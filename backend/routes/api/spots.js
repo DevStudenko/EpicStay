@@ -11,10 +11,13 @@ router.get('/', async (req, res, next) => {
     const spots = await Spot.findAll({
         include: [
             {
-                model: SpotImage
+                model: SpotImage,
+                attributes: ["url"]
             },
+
             {
-                model: Review
+                model: Review,
+                attributes: ["stars"]
             }
         ]
     });
@@ -59,11 +62,11 @@ router.get('/current', requireAuth, async (req, res, next) => {
     });
 
     let modifiedSpots = []; // Array to store modified spot objects
-
+    let spotObj, count, total
     spots.forEach(spot => {
-        let spotObj = spot.toJSON();
-        let count = spotObj.Reviews.length;
-        let total = 0; // Reset total for each spot
+        spotObj = spot.toJSON();
+        count = spotObj.Reviews.length;
+        total = 0; // Reset total for each spot
 
         for (let review of spotObj.Reviews) {
             total += review.stars;
@@ -81,6 +84,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
 
 //get spot by spotId
 router.get('/:spotId', async (req, res, next) => {
+    let spotObj;
     try {
         const { spotId } = req.params;
         const spot = await Spot.findOne({
@@ -89,35 +93,35 @@ router.get('/:spotId', async (req, res, next) => {
             },
             include: [
                 {
-                    model: Review
+                    model: Review,
+                    attributes: ["stars"]
                 },
                 {
-                    model: SpotImage
+                    model: SpotImage,
+                    attributes: ["id", "url", "preview"]
                 },
                 {
-                    model: User
+                    model: User,
+                    attributes: ["id", "firstName", "lastName"]
                 }
             ]
         });
 
-        let spotObj = spot.toJSON();
-        let count = spotObj.Reviews.length;
-        let total = 0; // Reset total for each spot
 
-        for (let review of spotObj.Reviews) {
-            total += review.stars;
-        }
+        spotObj = spot.toJSON();
+        let count = spotObj.Reviews.length;
+        spotObj.numReviews = count;
+        let total = 0;
+        spotObj.Reviews.forEach(review => {
+            total += review.stars
+        });
+        console.log(total)
+        spotObj.avgStarRating = count > 0 ? total / count : 0; // Handle case where count is 0
 
         spotObj.avgStarRating = count > 0 ? total / count : 0; // Handle case where count is 0
         spotObj.Owner = spotObj.User;
-        spotObj.numReviews = count;
+
         delete spotObj.User
-        spotObj.SpotImages.forEach(image => {
-            delete image.spotId;
-            delete image.createdAt;
-            delete image.updatedAt;
-        });
-        delete spotObj.Owner.username;
         delete spotObj.Reviews;
     } catch (err) {
         next(err);
