@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { Spot, SpotImage, Review, User } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
+//express-validator
+const { check } = require('express-validator');
+const { handleValidationErrors } = require('../../utils/validation');
 
-
-
+//get all spots
 router.get('/', async (req, res, next) => {
     const spots = await Spot.findAll({
         include: [
@@ -39,7 +41,7 @@ router.get('/', async (req, res, next) => {
     return res.json(modifiedSpots); // Return the array of modified spot objects
 });
 
-
+//get all current users spots
 router.get('/current', requireAuth, async (req, res, next) => {
     const currentUserId = req.user.dataValues.id;
     const spots = await Spot.findAll({
@@ -77,6 +79,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
     return res.json(modifiedSpots);
 });
 
+//get spot by spotId
 router.get('/:spotId', async (req, res, next) => {
     try {
         const { spotId } = req.params;
@@ -126,12 +129,69 @@ router.get('/:spotId', async (req, res, next) => {
         );
     }
 
-
-
     return res.json(spotObj);
 });
 
 
+
+const validateCreateSpot = [
+    check("address")
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("Street address is required"),
+    check("city")
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("City is required"),
+    check("state")
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("State is required"),
+    check("country")
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("Country is required"),
+    check("lat")
+        .notEmpty()
+        .isFloat({ min: -90, max: 90 })
+        .withMessage('Latitude must be between -90 and 90'),
+    check("lng")
+        .notEmpty()
+        .isFloat({ min: -180, max: 180 })
+        .withMessage('Longitude must be between -180 and 180'),
+    check("name")
+        .notEmpty()
+        .isLength({ max: 50 })
+        .withMessage("Name must be less than 50 characters"),
+    check("description")
+        .notEmpty()
+        .exists({ checkFalsy: true })
+        .withMessage("Description is required"),
+    check("price")
+        .notEmpty()
+        .isFloat({ min: 0 })
+        .withMessage('Price must be greater than 0'),
+    handleValidationErrors,
+];
+
+//create a new spot 
+router.post('/', requireAuth, validateCreateSpot, async (req, res, next) => {
+    const { address, city, state, country, lat, lng, name, description, price } = req.body;
+    const ownerId = req.user.dataValues.id;
+    const newSpot = await Spot.create({
+        ownerId,
+        address,
+        city,
+        state,
+        country,
+        lat,
+        lng,
+        name,
+        description,
+        price
+    });
+    return res.status(201).json(newSpot);
+})
 
 
 module.exports = router;
