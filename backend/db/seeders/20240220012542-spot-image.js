@@ -25,15 +25,22 @@ module.exports = {
         "preview": true,
         "spotId": 3,
         "url": "https://example.com/image3.jpg"
+      },
+      {
+        "preview": true,
+        "spotId": 4,
+        "url": "https://example.com/image4.jpg"
       }
     ], { validate: true });
   },
 
   async down(queryInterface, Sequelize) {
+    // First, delete records from the SpotImage table
+    options.tableName = 'SpotImages';
+    await queryInterface.bulkDelete(options, null, {});
+
+    // Then, delete records from the Spots table
     options.tableName = 'Spots';
-    const Op = Sequelize.Op;
-    return queryInterface.bulkDelete(options, {
-      spotId: { [Op.in]: [1, 2, 3] }
-    }, {});
+    return queryInterface.bulkDelete(options, null, {});
   }
 };

@@ -46,6 +46,18 @@ module.exports = {
         "name": "DevStudio",
         "description": "Innovative space for software development",
         "price": 150
+      },
+      {
+        "ownerId": 4,
+        "address": "789 Marvel Avenue",
+        "city": "New York",
+        "state": "New York",
+        "country": "United States of America",
+        "lat": 40.712776,
+        "lng": -74.005974,
+        "name": "AppAcademy",
+        "description": "Innovative space for software development",
+        "price": 150
       }
     ], { validate: true });
   },

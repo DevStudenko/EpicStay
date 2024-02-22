@@ -46,6 +46,12 @@ module.exports = {
         "stars": 4,
         "spotId": 3,
         "userId": 1
+      },
+      {
+        "review": "App Academy was an amazing experience. The instructors are top-notch, and I learned so much about web development.",
+        "stars": 5,
+        "spotId": 4,
+        "userId": 4
       }
     ], { validate: true });
   },
