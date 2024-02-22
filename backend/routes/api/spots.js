@@ -115,7 +115,6 @@ router.get('/:spotId', async (req, res, next) => {
         spotObj.Reviews.forEach(review => {
             total += review.stars
         });
-        console.log(total)
         spotObj.avgStarRating = count > 0 ? total / count : 0; // Handle case where count is 0
 
         spotObj.avgStarRating = count > 0 ? total / count : 0; // Handle case where count is 0
@@ -138,7 +137,7 @@ router.get('/:spotId', async (req, res, next) => {
 
 
 
-const validateCreateSpot = [
+const validateBody = [
     check("address")
         .exists({ checkFalsy: true })
         .notEmpty()
@@ -174,12 +173,12 @@ const validateCreateSpot = [
     check("price")
         .notEmpty()
         .isFloat({ min: 0 })
-        .withMessage('Price must be greater than 0'),
+        .withMessage('Price per day must be a positive number'),
     handleValidationErrors,
 ];
 
 //create a new spot 
-router.post('/', requireAuth, validateCreateSpot, async (req, res, next) => {
+router.post('/', requireAuth, validateBody, async (req, res, next) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
     const ownerId = req.user.dataValues.id;
     const newSpot = await Spot.create({
@@ -230,4 +229,33 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
         });
     }
 });
+
+//Edit a Spot
+router.put('/:spotId', requireAuth, validateBody, async (req, res, next) => {
+    const { spotId } = req.params;
+    const { address, city, state, country, lat, lng, name, description, price } = req.body;
+    const userId = req.user.dataValues.id;
+    const spot = await Spot.findByPk(spotId);
+
+    if (spot) {
+        if (spot.ownerId === userId) {
+            spot.address = address
+            spot.city = city
+            spot.state = state
+            spot.country = country
+            spot.lat = lat
+            spot.lng = lng
+            spot.name = name
+            spot.description = description
+            spot.price = price
+            await spot.save()
+        }
+    } else {
+        return res.status(404).json({
+            "message": "Spot couldn't be found"
+        });
+    }
+    return res.json(spot);
+})
+
 module.exports = router;
