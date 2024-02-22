@@ -35,10 +35,12 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    // First, delete records from the SpotImage table
+    options.tableName = 'SpotImages';
+    await queryInterface.bulkDelete(options, null, {});
+
+    // Then, delete records from the Spots table
     options.tableName = 'Spots';
-    const Op = Sequelize.Op;
-    return queryInterface.bulkDelete(options, {
-      spotId: { [Op.in]: [1, 2, 3, 4] }
-    }, {});
+    return queryInterface.bulkDelete(options, null, {});
   }
 };
