@@ -135,6 +135,33 @@ router.get('/:spotId', async (req, res, next) => {
     return res.json(spotObj);
 });
 
+//Get all Reviews by a Spot's id
+router.get('/:spotId/reviews', async (req, res, next) => {
+    const { spotId } = req.params;
+    // Check if the spot exists
+    const spot = await Spot.findByPk(spotId);
+    if (!spot) {
+        return res.status(404).json({ message: "Spot couldn't be found" });
+    }
+
+    const reviews = await Review.findAll({
+        where: {
+            spotId
+        },
+        include: [
+            {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            {
+                model: ReviewImage,
+                attributes: ['id', 'url']
+            }
+        ]
+    });
+
+    return res.status(200).json({ Reviews: reviews });
+});
 
 
 const validateBody = [
@@ -282,6 +309,6 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
             "message": "Spot couldn't be found"
         });
     }
-})
+});
 
 module.exports = router;
