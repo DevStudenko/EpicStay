@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Spot, SpotImage, Review, User } = require('../../db/models');
+const { Spot, SpotImage, Review, User, ReviewImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 //express-validator
 const { check } = require('express-validator');
@@ -164,7 +164,7 @@ router.get('/:spotId/reviews', async (req, res, next) => {
 });
 
 
-const validateBody = [
+const validateSpotBody = [
     check("address")
         .exists({ checkFalsy: true })
         .notEmpty()
@@ -205,7 +205,7 @@ const validateBody = [
 ];
 
 //create a new spot 
-router.post('/', requireAuth, validateBody, async (req, res, next) => {
+router.post('/', requireAuth, validateSpotBody, async (req, res, next) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
     const ownerId = req.user.dataValues.id;
     const newSpot = await Spot.create({
@@ -257,8 +257,56 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
     }
 });
 
+
+const validateReviewBody = [
+    check('review')
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("Review text is required"),
+    check('stars')
+        .exists({ checkFalsy: true })
+        .isInt()
+        .withMessage("Stars must be an integer from 1 to 5"),
+    handleValidationErrors
+];
+
+//Create a Review for a Spot based on the Spot's id
+router.post('/:spotId/reviews', validateReviewBody, requireAuth, async (req, res, next) => {
+    const { review, stars } = req.body;
+    const spotId = parseInt(req.params.spotId);
+    const userId = req.user.dataValues.id;
+
+    const existingReviews = await Review.findAll({
+        where: {
+            userId
+        },
+        // attributes: [userId, spotId]
+    });
+
+
+    existingReviews.forEach(review => {
+        if (review.spotId === spotId) {
+            return res.json({
+                "message": "User already has a review for this spot"
+            })
+        }
+    });
+
+
+    const newReview = await Review.create({
+        review,
+        stars,
+        spotId,
+        userId
+    });
+    return res.json({
+        newReview
+    });
+
+})
+
 //Edit a Spot
-router.put('/:spotId', requireAuth, validateBody, async (req, res, next) => {
+router.put('/:spotId', requireAuth, validateSpotBody, async (req, res, next) => {
     const { spotId } = req.params;
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
     const userId = req.user.dataValues.id;
@@ -289,6 +337,7 @@ router.put('/:spotId', requireAuth, validateBody, async (req, res, next) => {
     return res.json(spot);
 });
 
+//Delete a Spot
 router.delete('/:spotId', requireAuth, async (req, res, next) => {
     const { spotId } = req.params;
     const userId = req.user.dataValues.id;
