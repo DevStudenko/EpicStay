@@ -44,12 +44,13 @@ router.get('/', async (req, res, next) => {
     return res.json(modifiedSpots); // Return the array of modified spot objects
 });
 
-//get all current users spots
+//Get all Spots owned by the Current User
+
 router.get('/current', requireAuth, async (req, res, next) => {
-    const currentUserId = req.user.dataValues.id;
+    const currentUserId = req.user.id;
     const spots = await Spot.findAll({
         where: {
-            ownerId: parseInt(currentUserId)
+            ownerId: currentUserId
         },
         include: [
             {
@@ -79,7 +80,8 @@ router.get('/current', requireAuth, async (req, res, next) => {
 
         modifiedSpots.push(spotObj); // Add modified spot object to the array
     });
-    return res.json(modifiedSpots);
+    const response = { Spots: modifiedSpots }
+    return res.json(response);
 });
 
 //get spot by spotId
@@ -136,6 +138,7 @@ router.get('/:spotId', async (req, res, next) => {
 });
 
 //Get all Reviews by a Spot's id
+
 router.get('/:spotId/reviews', async (req, res, next) => {
     const { spotId } = req.params;
     // Check if the spot exists
@@ -204,7 +207,7 @@ const validateSpotBody = [
     handleValidationErrors,
 ];
 
-//create a new spot 
+//Create a spot
 router.post('/', requireAuth, validateSpotBody, async (req, res, next) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
     const ownerId = req.user.dataValues.id;
