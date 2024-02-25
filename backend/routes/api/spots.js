@@ -417,30 +417,30 @@ router.get('/:spotId/bookings', async (req, res, next) => {
 
 
 // Create a Booking from a Spot based on the Spot's id
-
-
 // Validation middleware for booking
-const validateBookingBody = [
+const validateBooking = [
     check('startDate')
-        .isDate({ format: 'YYYY-MM-DD' })
-        .withMessage("startDate must be a valid date")
-        .custom((value, { req }) => {
-            if (new Date(value) < new Date()) {
-                throw new Error("startDate cannot be in the past");
-            }
-            return true;
-        }),
+        .exists()
+        .isAfter()
+        .withMessage('Cannot create a booking in the past'),
+
     check('endDate')
-        .isDate({ format: 'YYYY-MM-DD' })
-        .withMessage("endDate must be a valid date")
+        .exists()
+        .isAfter()
+        .withMessage('Cannot create a booking in the past')
         .custom((value, { req }) => {
-            if (new Date(value) <= new Date(req.body.startDate)) {
+            const startDate = new Date(req.body.startDate);
+            const endDate = new Date(value);
+
+            if (endDate <= startDate) {
                 throw new Error("endDate cannot be on or before startDate");
             }
+
             return true;
-        })
+        }),
+    handleValidationErrors
 ];
-router.post('/:spotId/bookings', validateBookingBody, async (req, res) => {
+router.post('/:spotId/bookings', validateBooking, async (req, res) => {
     const { spotId } = req.params;
     const { startDate, endDate } = req.body;
     const userId = req.user.id; // Assuming req.user.id contains the ID of the authenticated user
