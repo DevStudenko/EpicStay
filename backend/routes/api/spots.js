@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Spot, SpotImage, Review, User, ReviewImage } = require('../../db/models');
+const { Spot, SpotImage, Review, User, ReviewImage, Booking } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 //express-validator
 const { check } = require('express-validator');
@@ -357,6 +357,57 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
         return res.json({
             "message": "Spot couldn't be found"
         });
+    }
+});
+
+//Get all Bookings for a Spot based on the Spot's id
+router.get('/:spotId/bookings', async (req, res, next) => {
+    const { spotId } = req.params;
+    const bookings = await Booking.findAll({
+        where: {
+            spotId
+        },
+        include: [
+            {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            {
+                model: Spot,
+                attributes: ['ownerId']
+            }
+        ]
+    });
+
+    if (bookings.length === 0) return res.status(404).json({
+        message: "Spot couldn't be found"
+    });
+
+    const isOwner = bookings[0].Spot.ownerId === req.user.id;
+
+    if (isOwner) {
+        const ownersSpotBookings = bookings.map(booking => ({
+            User: {
+                id: booking.User.id,
+                firstName: booking.User.firstName,
+                lastName: booking.User.lastName,
+            },
+            id: booking.id,
+            spotId: booking.spotId,
+            userId: booking.userId,
+            startDate: booking.startDate,
+            endDate: booking.endDate,
+            createdAt: booking.createdAt,
+            updatedAt: booking.updatedAt
+        }))
+        return res.json({ Bookings: ownersSpotBookings });
+    } else {
+        const publicSpots = bookings.map(booking => ({
+            spotId: booking.spotId,
+            startDate: booking.startDate,
+            endDate: booking.endDate
+        }));
+        return res.json({ Bookings: publicSpots });
     }
 });
 
