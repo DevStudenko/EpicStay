@@ -18,7 +18,21 @@ module.exports = (sequelize, DataTypes) => {
   SpotImage.init({
     preview: DataTypes.BOOLEAN,
     spotId: DataTypes.INTEGER,
-    url: DataTypes.TEXT
+    url: DataTypes.TEXT,
+    createdAt: {
+      type: DataTypes.DATE,
+      get() {
+        const rawValue = this.getDataValue('createdAt');
+        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+      }
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      get() {
+        const rawValue = this.getDataValue('updatedAt');
+        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+      }
+    }
   }, {
     sequelize,
     modelName: 'SpotImage',
