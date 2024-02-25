@@ -25,7 +25,21 @@ module.exports = (sequelize, DataTypes) => {
     review: DataTypes.TEXT,
     stars: DataTypes.INTEGER,
     spotId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER
+    userId: DataTypes.INTEGER,
+    createdAt: {
+      type: DataTypes.DATE,
+      get() {
+        const rawValue = this.getDataValue('createdAt');
+        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+      }
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      get() {
+        const rawValue = this.getDataValue('updatedAt');
+        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+      }
+    }
   }, {
     sequelize,
     modelName: 'Review',

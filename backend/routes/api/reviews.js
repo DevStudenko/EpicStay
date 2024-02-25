@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { Review, User, Spot, ReviewImage, SpotImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
+//express-validator
+const { check } = require('express-validator');
+const { handleValidationErrors } = require('../../utils/validation');
 
 router.get('/current', requireAuth, async (req, res, next) => {
     const userId = req.user.dataValues.id;

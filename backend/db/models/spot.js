@@ -37,7 +37,21 @@ module.exports = (sequelize, DataTypes) => {
     lng: DataTypes.DECIMAL,
     name: DataTypes.TEXT,
     description: DataTypes.TEXT,
-    price: DataTypes.DECIMAL
+    price: DataTypes.DECIMAL,
+    createdAt: {
+      type: DataTypes.DATE,
+      get() {
+        const rawValue = this.getDataValue('createdAt');
+        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+      }
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      get() {
+        const rawValue = this.getDataValue('updatedAt');
+        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+      }
+    }
   }, {
     sequelize,
     modelName: 'Spot',

@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Review, {
         foreignKey: 'userId'
       });
-      
+
       User.hasMany(models.Booking, {
         foreignKey: 'userId'
       })
@@ -53,6 +53,20 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           len: [60, 60]
+        }
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        get() {
+          const rawValue = this.getDataValue('createdAt');
+          return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+        }
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        get() {
+          const rawValue = this.getDataValue('updatedAt');
+          return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
         }
       }
     },

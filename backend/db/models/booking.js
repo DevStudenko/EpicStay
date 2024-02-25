@@ -21,9 +21,35 @@ module.exports = (sequelize, DataTypes) => {
   }
   Booking.init({
     userId: DataTypes.INTEGER,
-    startDate: DataTypes.DATE,
-    endDate: DataTypes.DATE,
-    spotId: DataTypes.INTEGER
+    startDate: {
+      type: DataTypes.DATE,
+      get() {
+        const rawValue = this.getDataValue('createdAt');
+        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+      }
+    },
+    endDate: {
+      type: DataTypes.DATE,
+      get() {
+        const rawValue = this.getDataValue('createdAt');
+        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+      }
+    },
+    spotId: DataTypes.INTEGER,
+    createdAt: {
+      type: DataTypes.DATE,
+      get() {
+        const rawValue = this.getDataValue('createdAt');
+        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+      }
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      get() {
+        const rawValue = this.getDataValue('updatedAt');
+        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+      }
+    }
   }, {
     sequelize,
     modelName: 'Booking',
