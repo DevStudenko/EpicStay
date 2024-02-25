@@ -24,15 +24,15 @@ module.exports = (sequelize, DataTypes) => {
     startDate: {
       type: DataTypes.DATE,
       get() {
-        const rawValue = this.getDataValue('createdAt');
-        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+        const rawValue = this.getDataValue('startDate');
+        return rawValue ? rawValue.toISOString().substring(0, 10) : null;
       }
     },
     endDate: {
       type: DataTypes.DATE,
       get() {
-        const rawValue = this.getDataValue('createdAt');
-        return rawValue ? rawValue.toISOString().replace('T', ' ').substring(0, 19) : null;
+        const rawValue = this.getDataValue('endDate');
+        return rawValue ? rawValue.toISOString().substring(0, 10) : null;
       }
     },
     spotId: DataTypes.INTEGER,
