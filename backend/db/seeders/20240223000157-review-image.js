@@ -22,22 +22,6 @@ module.exports = {
       {
         "reviewId": 3,
         "url": "https://example.com/image3.jpg"
-      },
-      {
-        "reviewId": 4,
-        "url": "https://example.com/image4.jpg"
-      },
-      {
-        "reviewId": 5,
-        "url": "https://example.com/image5.jpg"
-      },
-      {
-        "reviewId": 6,
-        "url": "https://example.com/image6.jpg"
-      },
-      {
-        "reviewId": 7,
-        "url": "https://example.com/image7.jpg"
       }
     ], { validate: true });
   },

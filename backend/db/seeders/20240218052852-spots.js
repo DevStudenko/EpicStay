@@ -46,19 +46,8 @@ module.exports = {
         "name": "DevStudio",
         "description": "Innovative space for software development",
         "price": 150
-      },
-      {
-        "ownerId": 4,
-        "address": "789 Marvel Avenue",
-        "city": "New York",
-        "state": "New York",
-        "country": "United States of America",
-        "lat": 40.712776,
-        "lng": -74.005974,
-        "name": "AppAcademy",
-        "description": "Innovative space for software development",
-        "price": 150
       }
+
     ], { validate: true });
   },
 
@@ -66,7 +55,7 @@ module.exports = {
     options.tableName = 'Spots';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      name: { [Op.in]: ['App Academy', 'CodeCamp', 'DevStudio'] }
+      ownerId: { [Op.in]: [1, 2, 4] }
     }, {});
   }
 };
