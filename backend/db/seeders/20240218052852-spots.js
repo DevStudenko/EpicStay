@@ -46,6 +46,18 @@ module.exports = {
         "name": "DevStudio",
         "description": "Innovative space for software development",
         "price": 150
+      },
+      {
+        "ownerId": 4,
+        "address": "789 demo-demo",
+        "city": "demooo",
+        "state": "demmmmo",
+        "country": "demo",
+        "lat": 40.712776,
+        "lng": -74.005974,
+        "name": "DevDemo",
+        "description": "demmmoooo",
+        "price": 999
       }
 
     ], { validate: true });
