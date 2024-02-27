@@ -140,7 +140,7 @@ router.get('/:spotId', async (req, res, next) => {
 
 //Get all Reviews by a Spot's id
 
-router.get('/:spotId/reviews', requireAuth, async (req, res, next) => {
+router.get('/:spotId/reviews', async (req, res, next) => {
     const { spotId } = req.params;
     // Check if the spot exists
     const spot = await Spot.findByPk(spotId);
@@ -365,7 +365,7 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
 });
 
 //Get all Bookings for a Spot based on the Spot's id
-router.get('/:spotId/bookings', async (req, res, next) => {
+router.get('/:spotId/bookings', requireAuth, async (req, res, next) => {
     const { spotId } = req.params;
     const bookings = await Booking.findAll({
         where: {
