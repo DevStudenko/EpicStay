@@ -96,7 +96,7 @@ const validateReview = [
     handleValidationErrors
 ];
 
-router.put('/:reviewId', validateReview, requireAuth, async (req, res, next) => {
+router.put('/:reviewId', requireAuth, validateReview, async (req, res, next) => {
     const { reviewId } = req.params;
     const { review, stars } = req.body;
     const currentReview = await Review.findByPk(reviewId);
