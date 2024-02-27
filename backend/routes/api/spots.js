@@ -96,7 +96,7 @@ const validateQueryFilters = [
 //get all spots
 router.get(
     '/',
-    validateQuery,
+    validateQueryFilters,
     async (req, res) => {
 
         let { page, size, maxLat, minLat, minLng, maxLng } = req.query
