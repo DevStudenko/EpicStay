@@ -7,43 +7,172 @@ const { check } = require('express-validator');
 const { Op } = require('sequelize');
 const { handleValidationErrors } = require('../../utils/validation');
 
-//get all spots
-router.get('/', async (req, res, next) => {
-    const spots = await Spot.findAll({
-        include: [
-            {
-                model: SpotImage,
-                attributes: ["url"]
-            },
-
-            {
-                model: Review,
-                attributes: ["stars"]
+const validateQueryFilters = [
+    query('page')
+        .isInt({ min: 1 })
+        .withMessage('Page must be greater than or equal to 1')
+        .optional(),
+    query('page')
+        .isInt({ max: 10 })
+        .withMessage('Page must be less than or equal to 10')
+        .optional(),
+    query('size')
+        .isInt({ min: 1 })
+        .withMessage('Size must be greater than or equal to 1')
+        .optional(),
+    query('size')
+        .isInt({ max: 20 })
+        .withMessage('Size must be less than or equal to 20')
+        .optional(),
+    query('minLat')
+        .isFloat({ min: -90, max: 90 })
+        .withMessage('Minimum latitude must be -90 or greater')
+        .bail()
+        .custom(async (min, { req }) => {
+            const max = req.query.maxLat;
+            if (Number.parseFloat(min) > Number.parseFloat(max)) {
+                throw new Error('Minimum latitude cannot be greater than maximum latitude')
             }
-        ]
-    });
+        })
+        .optional(),
+    query('maxLat')
+        .isFloat({ min: -90, max: 90 })
+        .withMessage('Maximum latitude must be equal to or less than 90')
+        .bail()
+        .custom(async (max, { req }) => {
+            const min = req.query.minLat;
+            if (Number.parseFloat(max) < Number.parseFloat(min)) {
+                throw new Error('Maximum latitude cannot be less than minimum latitude')
+            }
+        })
+        .optional(),
+    query('minLng')
+        .isFloat({ min: -180, max: 180 })
+        .withMessage('Minimum longitude must be -180 or greater')
+        .bail()
+        .custom(async (min, { req }) => {
+            const max = req.query.maxLng;
+            if (Number.parseFloat(min) > Number.parseFloat(max)) {
+                throw new Error('Minimum longitude cannot be greater than maximum longitude')
+            }
+        })
+        .optional(),
+    query('maxLng')
+        .isFloat({ min: -180, max: 180 })
+        .withMessage('Maximum longitude must be 180 or less')
+        .bail()
+        .custom(async (max, { req }) => {
+            const min = req.query.minLng;
+            if (Number.parseFloat(max) < Number.parseFloat(min)) {
+                throw new Error('Maximum longitude cannot be less than minimum longitude')
+            }
+        })
+        .optional(),
+    query('minPrice')
+        .isFloat({ min: 0 })
+        .withMessage('Minimum price must be greater than or equal to 0')
+        .bail()
+        .custom(async (min, { req }) => {
+            const max = req.query.maxPrice;
+            if (Number.parseFloat(min) > Number.parseFloat(max)) {
+                throw new Error('Minimum price cannot be greater than maximum price')
+            }
+        })
+        .optional(),
+    query('maxPrice')
+        .isFloat({ min: 0 })
+        .withMessage('Maximum price must be greater than or equal to 0')
+        .bail()
+        .custom(async (max, { req }) => {
+            const min = req.query.minPrice;
+            if (Number.parseFloat(max) < Number.parseFloat(min)) {
+                throw new Error('Maximum price cannot be less than minimum price')
+            }
+        })
+        .optional(),
+    handleValidationErrors
+];
 
-    let modifiedSpots = []; // Array to store modified spot objects
+//get all spots
+router.get(
+    '/',
+    validateQuery,
+    async (req, res) => {
 
-    spots.forEach(spot => {
-        let spotObj = spot.toJSON();
-        let count = spotObj.Reviews.length;
-        let total = 0; // Reset total for each spot
+        let { page, size, maxLat, minLat, minLng, maxLng } = req.query
+        let minPrice = req.query.minPrice
+        let maxPrice = req.query.maxPrice
+        page = parseInt(page) || 1;
+        size = parseInt(size) || 20;
 
-        for (let review of spotObj.Reviews) {
-            total += review.stars;
-        }
+        let limit = size;
+        let offset = size * (page - 1);
 
-        spotObj.avgStarRating = count > 0 ? total / count : 0; // Handle case where count is 0
-        spotObj.previewImage = spotObj.SpotImages[0] ? spotObj.SpotImages[0].url : null; // Handle case where there are no images
-        delete spotObj.Reviews;
-        delete spotObj.SpotImages;
+        const options = {
+            include: [
+                { model: Review },
+                { model: SpotImage, where: { preview: true }, required: false }
+            ],
+            where: {},
+            limit,
+            offset
+        };
 
-        modifiedSpots.push(spotObj); // Add modified spot object to the array
-    });
+        if (minLat) {
+            options.where.lat = { [Op.gte]: minLat }
+        };
 
-    return res.json(modifiedSpots); // Return the array of modified spot objects
-});
+        if (maxLat) {
+            options.where.lat = { [Op.lte]: maxLat }
+        };
+
+        if (minLng) {
+            options.where.lng = { [Op.gte]: minLng }
+        };
+
+        if (maxLng) {
+            options.where.lng = { [Op.lte]: maxLng }
+        };
+
+        if (minPrice) {
+            options.where.price = { [Op.gte]: minPrice }
+        };
+
+        if (maxPrice) {
+            options.where.price = { [Op.lte]: maxPrice }
+        };
+
+        let spots = await Spot.findAll(options)
+
+        spots = spots.map(spot => {
+
+            const reviews = spot.Reviews
+            const numReviews = reviews.length
+            let sum = 0
+            reviews.forEach(review => {
+                sum += review.stars
+            });
+            const avgRating = sum / numReviews
+            spot.dataValues.avgRating = avgRating;
+            delete spot.dataValues.Reviews
+
+            spot.dataValues.previewImage = '';
+            if (spot.dataValues.SpotImages) {
+                const foundSpotImage = spot.dataValues.SpotImages.find(image => {
+                    return image.preview
+                })
+                if (foundSpotImage) {
+                    spot.dataValues.previewImage = foundSpotImage.url
+                }
+            }
+
+            delete spot.dataValues.SpotImages
+            return spot
+        })
+        const response = { Spots: spots, page, size }
+        return res.json(response)
+    }
+);
 
 //Get all Spots owned by the Current User
 
