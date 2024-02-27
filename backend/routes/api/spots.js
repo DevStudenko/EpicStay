@@ -275,7 +275,7 @@ const validateReviewBody = [
 ];
 
 //Create a Review for a Spot based on the Spot's id
-router.post('/:spotId/reviews', validateReviewBody, requireAuth, async (req, res, next) => {
+router.post('/:spotId/reviews', requireAuth, validateReviewBody, async (req, res, next) => {
     const { review, stars } = req.body;
     const spotId = parseInt(req.params.spotId);
     const userId = req.user.dataValues.id;
