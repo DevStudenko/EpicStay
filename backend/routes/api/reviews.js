@@ -49,7 +49,8 @@ router.get('/current', requireAuth, async (req, res, next) => {
     return res.status(200).json(reviewsResponse);
 });
 
-//Add an Image to a Review based on the Review's id
+
+// Add an Image to a Review based on the Review's id
 router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
     const { reviewId } = req.params;
     const { url } = req.body;
@@ -71,20 +72,23 @@ router.post('/:reviewId/images', requireAuth, async (req, res, next) => {
     });
 
     if (numImages >= 10) {
-        return res.status(403).json({ message: "Maximum number of images for this resource was reached" })
-    };
+        return res.status(403).json({ message: "Maximum number of images for this resource was reached" });
+    }
 
     const newImage = await ReviewImage.create({
         reviewId,
         url
     });
 
-    delete newImage.dataValues.reviewId;
-    delete newImage.dataValues.createdAt;
-    delete newImage.dataValues.updatedAt;
+    // Construct a new object with only the desired properties
+    const response = {
+        id: newImage.id,
+        url: newImage.url
+    };
 
-    return res.json(newImage)
+    return res.json(response);
 });
+
 
 
 //Edit a Review

@@ -79,7 +79,8 @@ router.get('/current', requireAuth, async (req, res, next) => {
         delete spotObj.Reviews;
         delete spotObj.SpotImages;
 
-        modifiedSpots.push(spotObj); // Add modified spot object to the array
+        // Add modified spot object to the array
+        modifiedSpots.push(spotObj);
     });
     const response = { Spots: modifiedSpots }
     return res.json(response);
