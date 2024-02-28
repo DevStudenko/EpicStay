@@ -388,7 +388,7 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
     }
 });
 
-
+//create a Review
 const validateReviewBody = [
     check('review')
         .exists({ checkFalsy: true })
@@ -402,7 +402,6 @@ const validateReviewBody = [
 ];
 
 
-//Create a Review for a Spot based on the Spot's id
 router.post('/:spotId/reviews', requireAuth, validateReviewBody, async (req, res, next) => {
     const { review, stars } = req.body;
     const spotId = parseInt(req.params.spotId);
@@ -438,7 +437,18 @@ router.post('/:spotId/reviews', requireAuth, validateReviewBody, async (req, res
         userId
     });
 
-    return res.status(201).json(newReview);
+    // Construct the response object
+    const response = {
+        id: newReview.id,
+        userId: newReview.userId,
+        spotId: newReview.spotId,
+        review: newReview.review,
+        stars: newReview.stars,
+        createdAt: newReview.createdAt,
+        updatedAt: newReview.updatedAt
+    };
+
+    return res.status(201).json(response);
 });
 
 
