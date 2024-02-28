@@ -408,34 +408,39 @@ router.post('/:spotId/reviews', requireAuth, validateReviewBody, async (req, res
     const spotId = parseInt(req.params.spotId);
     const userId = req.user.dataValues.id;
 
-    const existingReviews = await Review.findAll({
+    // Check if the spot exists
+    const spot = await Spot.findByPk(spotId);
+    if (!spot) {
+        return res.status(404).json({
+            "message": "Spot couldn't be found"
+        });
+    }
+
+    // Check if the user already has a review for this spot
+    const existingReview = await Review.findOne({
         where: {
-            userId
-        },
-        // attributes: [userId, spotId]
-    });
-
-
-    existingReviews.forEach(review => {
-        if (review.spotId === spotId) {
-            return res.json({
-                "message": "User already has a review for this spot"
-            })
+            userId,
+            spotId
         }
     });
 
+    if (existingReview) {
+        return res.status(403).json({
+            "message": "User already has a review for this spot"
+        });
+    }
 
+    // Create the new review
     const newReview = await Review.create({
         review,
         stars,
         spotId,
         userId
     });
-    return res.json({
-        newReview
-    });
 
-})
+    return res.status(201).json(newReview);
+});
+
 
 //Edit a Spot
 router.put('/:spotId', requireAuth, validateSpotBody, async (req, res, next) => {
