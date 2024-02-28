@@ -106,7 +106,7 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
     // Check for overlap between the existing booking and the new booking
     if ((newStart <= bookingEnd && newEnd >= bookingStart) || (bookingStart <= newEnd && bookingEnd > newStart)) {
         hasConflict = true;
-        if ((newStart => bookingStart && newStart <= bookingEnd) || newStart == bookingStart) {
+        if ((newStart >= bookingStart && newStart <= bookingEnd) || newStart == bookingStart) {
             conflicts.startDate = "Start date conflicts with an existing booking";
         }
         if ((newEnd >= bookingStart && newEnd <= bookingEnd) || newEnd == bookingEnd) {
