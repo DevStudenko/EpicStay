@@ -87,7 +87,6 @@ router.get('/current', requireAuth, async (req, res, next) => {
 
 //get spot by spotId
 router.get('/:spotId', async (req, res, next) => {
-    let spotObj;
     try {
         const { spotId } = req.params;
         const spot = await Spot.findOne({
@@ -110,8 +109,13 @@ router.get('/:spotId', async (req, res, next) => {
             ]
         });
 
+        if (!spot) { // Check if the spot is null
+            return res.status(404).json({
+                "message": "Spot couldn't be found"
+            });
+        }
 
-        spotObj = spot.toJSON();
+        let spotObj = spot.toJSON();
         let count = spotObj.Reviews.length;
         spotObj.numReviews = count;
         let total = 0;
@@ -120,23 +124,16 @@ router.get('/:spotId', async (req, res, next) => {
         });
         spotObj.avgStarRating = count > 0 ? total / count : 0; // Handle case where count is 0
 
-        spotObj.avgStarRating = count > 0 ? total / count : 0; // Handle case where count is 0
         spotObj.Owner = spotObj.User;
-
-        delete spotObj.User
+        delete spotObj.User;
         delete spotObj.Reviews;
+
+        return res.json(spotObj);
     } catch (err) {
         next(err);
-        res.status(404);
-        return res.json(
-            {
-                "message": "Spot couldn't be found"
-            }
-        );
     }
-
-    return res.json(spotObj);
 });
+
 
 //Get all Reviews by a Spot's id
 
