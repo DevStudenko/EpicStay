@@ -388,7 +388,7 @@ router.post('/:spotId/images', requireAuth, async (req, res, next) => {
     }
 });
 
-
+//create a Review
 const validateReviewBody = [
     check('review')
         .exists({ checkFalsy: true })
@@ -402,40 +402,55 @@ const validateReviewBody = [
 ];
 
 
-//Create a Review for a Spot based on the Spot's id
 router.post('/:spotId/reviews', requireAuth, validateReviewBody, async (req, res, next) => {
     const { review, stars } = req.body;
     const spotId = parseInt(req.params.spotId);
     const userId = req.user.dataValues.id;
 
-    const existingReviews = await Review.findAll({
+    // Check if the spot exists
+    const spot = await Spot.findByPk(spotId);
+    if (!spot) {
+        return res.status(404).json({
+            "message": "Spot couldn't be found"
+        });
+    }
+
+    // Check if the user already has a review for this spot
+    const existingReview = await Review.findOne({
         where: {
-            userId
-        },
-        // attributes: [userId, spotId]
-    });
-
-
-    existingReviews.forEach(review => {
-        if (review.spotId === spotId) {
-            return res.json({
-                "message": "User already has a review for this spot"
-            })
+            userId,
+            spotId
         }
     });
 
+    if (existingReview) {
+        return res.status(403).json({
+            "message": "User already has a review for this spot"
+        });
+    }
 
+    // Create the new review
     const newReview = await Review.create({
         review,
         stars,
         spotId,
         userId
     });
-    return res.json({
-        newReview
-    });
 
-})
+    // Construct the response object
+    const response = {
+        id: newReview.id,
+        userId: newReview.userId,
+        spotId: newReview.spotId,
+        review: newReview.review,
+        stars: newReview.stars,
+        createdAt: newReview.createdAt.toISOString().replace('T', ' ').substring(0, 19),
+        updatedAt: newReview.updatedAt.toISOString().replace('T', ' ').substring(0, 19)
+    };
+
+    return res.status(201).json(response);
+});
+
 
 //Edit a Spot
 router.put('/:spotId', requireAuth, validateSpotBody, async (req, res, next) => {
