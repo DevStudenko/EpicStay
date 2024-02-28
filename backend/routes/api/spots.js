@@ -266,10 +266,11 @@ const validateReviewBody = [
         .withMessage("Review text is required"),
     check('stars')
         .exists({ checkFalsy: true })
-        .isInt()
+        .isInt({ min: 1, max: 5 })
         .withMessage("Stars must be an integer from 1 to 5"),
     handleValidationErrors
 ];
+
 
 //Create a Review for a Spot based on the Spot's id
 router.post('/:spotId/reviews', requireAuth, validateReviewBody, async (req, res, next) => {
