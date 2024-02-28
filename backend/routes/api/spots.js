@@ -649,8 +649,8 @@ router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req,
     const reservationDetails = {
         spotId,
         userId: currentUserId,
-        startDate: start,
-        endDate: finish,
+        startDate,
+        endDate
     };
 
     return res.status(200).json(reservationDetails);
