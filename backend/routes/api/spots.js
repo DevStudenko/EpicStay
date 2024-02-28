@@ -621,12 +621,12 @@ router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req,
         const newEnd = new Date(endDate).getTime();
 
         // Check for overlap between the existing reservation and the new reservation
-        if ((newStart < bookedEnd && newEnd > bookedStart) || (bookedStart < newEnd && bookedEnd > newStart)) {
+        if ((newStart <= bookedEnd && newEnd >= bookedStart) || (bookedStart <= newEnd && bookedEnd > newStart)) {
             conflictFound = true;
-            if ((newStart > bookedStart && newStart < bookedEnd) || newStart == bookedStart) {
+            if ((newStart >= bookedStart && newStart <= bookedEnd) || newStart == bookedStart) {
                 conflictMessages.startDate = "Start date conflicts with an existing booking";
             }
-            if ((newEnd > bookedStart && newEnd < bookedEnd) || newEnd == bookedEnd) {
+            if ((newEnd >= bookedStart && newEnd <= bookedEnd) || newEnd == bookedEnd) {
                 conflictMessages.endDate = "End date conflicts with an existing booking";
             }
         }
