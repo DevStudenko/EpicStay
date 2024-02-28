@@ -43,22 +43,39 @@ router.post(
     async (req, res) => {
         const { email, password, username, firstName, lastName } = req.body;
         const hashedPassword = bcrypt.hashSync(password);
-        const user = await User.create({ email, username, hashedPassword, firstName, lastName });
 
-        const safeUser = {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            username: user.username,
-        };
+        try {
+            const user = await User.create({ email, username, hashedPassword, firstName, lastName });
 
-        await setTokenCookie(res, safeUser);
+            const safeUser = {
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                username: user.username,
+            };
 
-        return res.json({
-            user: safeUser
-        });
+            await setTokenCookie(res, safeUser);
+
+            return res.json({
+                user: safeUser
+            });
+        } catch (error) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                const field = error.errors[0].path;
+                const message = `User with that ${field} already exists`;
+                return res.status(500).json({
+                    message: "User already exists",
+                    errors: {
+                        [field]: message
+                    }
+                });
+            }
+            // Handle other errors
+            return res.status(500).json({ message: "An error occurred" });
+        }
     }
 );
+
 
 module.exports = router;
