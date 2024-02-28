@@ -640,20 +640,15 @@ router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req,
     }
 
     // Create new reservation
-    await Booking.create({
+    const booking = await Booking.create({
         spotId,
         userId: currentUserId,
         startDate,
         endDate
     });
-    const reservationDetails = {
-        spotId,
-        userId: currentUserId,
-        startDate,
-        endDate
-    };
 
-    return res.status(200).json(reservationDetails);
+
+    return res.status(200).json(booking);
 });
 
 module.exports = router;
