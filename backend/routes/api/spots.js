@@ -7,172 +7,169 @@ const { check, query } = require('express-validator');
 const { Op } = require('sequelize');
 const { handleValidationErrors } = require('../../utils/validation');
 
-const validateQueryFilters = [
-    query('page')
+const handleValidateQuery = [
+    query("page")
         .isInt({ min: 1 })
-        .withMessage('Page must be greater than or equal to 1')
+        .withMessage("Page must be greater than or equal to 1")
         .optional(),
-    query('page')
+    query("page")
         .isInt({ max: 10 })
-        .withMessage('Page must be less than or equal to 10')
+        .withMessage("Page must be less than or equal to 10")
         .optional(),
-    query('size')
+    query("size")
         .isInt({ min: 1 })
-        .withMessage('Size must be greater than or equal to 1')
+        .withMessage("Size must be greater than or equal to 1")
         .optional(),
-    query('size')
+    query("size")
         .isInt({ max: 20 })
-        .withMessage('Size must be less than or equal to 20')
+        .withMessage("Size must be less than or equal to 20")
         .optional(),
-    query('minLat')
+    query("minLat")
         .isFloat({ min: -90, max: 90 })
-        .withMessage('Minimum latitude must be -90 or greater')
+        .withMessage("Minimum latitude must be -90 or greater")
         .bail()
         .custom(async (min, { req }) => {
             const max = req.query.maxLat;
             if (Number.parseFloat(min) > Number.parseFloat(max)) {
-                throw new Error('Minimum latitude cannot be greater than maximum latitude')
+                throw new Error(
+                    "Minimum latitude cannot be greater than maximum latitude"
+                );
             }
         })
         .optional(),
-    query('maxLat')
+    query("maxLat")
         .isFloat({ min: -90, max: 90 })
-        .withMessage('Maximum latitude must be equal to or less than 90')
+        .withMessage("Maximum latitude must be equal to or less than 90")
         .bail()
         .custom(async (max, { req }) => {
             const min = req.query.minLat;
             if (Number.parseFloat(max) < Number.parseFloat(min)) {
-                throw new Error('Maximum latitude cannot be less than minimum latitude')
+                throw new Error(
+                    "Maximum latitude cannot be less than minimum latitude"
+                );
             }
         })
         .optional(),
-    query('minLng')
+    query("minLng")
         .isFloat({ min: -180, max: 180 })
-        .withMessage('Minimum longitude must be -180 or greater')
+        .withMessage("Minimum longitude must be -180 or greater")
         .bail()
         .custom(async (min, { req }) => {
             const max = req.query.maxLng;
             if (Number.parseFloat(min) > Number.parseFloat(max)) {
-                throw new Error('Minimum longitude cannot be greater than maximum longitude')
+                throw new Error(
+                    "Minimum longitude cannot be greater than maximum longitude"
+                );
             }
         })
         .optional(),
-    query('maxLng')
+    query("maxLng")
         .isFloat({ min: -180, max: 180 })
-        .withMessage('Maximum longitude must be 180 or less')
+        .withMessage("Maximum longitude must be 180 or less")
         .bail()
         .custom(async (max, { req }) => {
             const min = req.query.minLng;
             if (Number.parseFloat(max) < Number.parseFloat(min)) {
-                throw new Error('Maximum longitude cannot be less than minimum longitude')
+                throw new Error(
+                    "Maximum longitude cannot be less than minimum longitude"
+                );
             }
         })
         .optional(),
-    query('minPrice')
+    query("minPrice")
         .isFloat({ min: 0 })
-        .withMessage('Minimum price must be greater than or equal to 0')
+        .withMessage("Minimum price must be greater than or equal to 0")
         .bail()
         .custom(async (min, { req }) => {
             const max = req.query.maxPrice;
             if (Number.parseFloat(min) > Number.parseFloat(max)) {
-                throw new Error('Minimum price cannot be greater than maximum price')
+                throw new Error("Minimum price cannot be greater than maximum price");
             }
         })
         .optional(),
-    query('maxPrice')
+    query("maxPrice")
         .isFloat({ min: 0 })
-        .withMessage('Maximum price must be greater than or equal to 0')
+        .withMessage("Maximum price must be greater than or equal to 0")
         .bail()
         .custom(async (max, { req }) => {
             const min = req.query.minPrice;
             if (Number.parseFloat(max) < Number.parseFloat(min)) {
-                throw new Error('Maximum price cannot be less than minimum price')
+                throw new Error("Maximum price cannot be less than minimum price");
             }
         })
         .optional(),
-    handleValidationErrors
+    handleValidationErrors,
 ];
 
-//get all spots
-router.get(
-    '/',
-    validateQueryFilters,
-    async (req, res) => {
+// Get all Spots
+router.get("/", handleValidateQuery, async (req, res) => {
+    let { page, size, maxLat, minLat, minLng, maxLng } = req.query;
+    let minPrice = req.query.minPrice;
+    let maxPrice = req.query.maxPrice;
+    page = parseInt(page) || 1;
+    size = parseInt(size) || 20;
 
-        let { page, size, maxLat, minLat, minLng, maxLng } = req.query
-        let minPrice = req.query.minPrice
-        let maxPrice = req.query.maxPrice
-        page = parseInt(page) || 1;
-        size = parseInt(size) || 20;
+    let limit = size;
+    let offset = size * (page - 1);
 
-        let limit = size;
-        let offset = size * (page - 1);
+    const options = {
+        include: [
+            { model: Review },
+            { model: SpotImage, where: { preview: true }, required: false },
+        ],
+        where: {},
+        limit,
+        offset,
+    };
 
-        const options = {
-            include: [
-                { model: Review },
-                { model: SpotImage, where: { preview: true }, required: false }
-            ],
-            where: {},
-            limit,
-            offset
-        };
-
-        if (minLat) {
-            options.where.lat = { [Op.gte]: minLat }
-        };
-
-        if (maxLat) {
-            options.where.lat = { [Op.lte]: maxLat }
-        };
-
-        if (minLng) {
-            options.where.lng = { [Op.gte]: minLng }
-        };
-
-        if (maxLng) {
-            options.where.lng = { [Op.lte]: maxLng }
-        };
-
-        if (minPrice) {
-            options.where.price = { [Op.gte]: minPrice }
-        };
-
-        if (maxPrice) {
-            options.where.price = { [Op.lte]: maxPrice }
-        };
-
-        let spots = await Spot.findAll(options)
-
-        spots = spots.map(spot => {
-
-            const reviews = spot.Reviews
-            const numReviews = reviews.length
-            let sum = 0
-            reviews.forEach(review => {
-                sum += review.stars
-            });
-            const avgRating = sum / numReviews
-            spot.dataValues.avgRating = avgRating;
-            delete spot.dataValues.Reviews
-
-            spot.dataValues.previewImage = '';
-            if (spot.dataValues.SpotImages) {
-                const foundSpotImage = spot.dataValues.SpotImages.find(image => {
-                    return image.preview
-                })
-                if (foundSpotImage) {
-                    spot.dataValues.previewImage = foundSpotImage.url
-                }
-            }
-
-            delete spot.dataValues.SpotImages
-            return spot
-        })
-        const response = { Spots: spots, page, size }
-        return res.json(response)
+    if (minLat) {
+        options.where.lat = { [Op.gte]: minLat };
     }
-);
+    if (maxLat) {
+        options.where.lat = { [Op.lte]: maxLat };
+    }
+    if (minLng) {
+        options.where.lng = { [Op.gte]: minLng };
+    }
+    if (maxLng) {
+        options.where.lng = { [Op.lte]: maxLng };
+    }
+    if (minPrice) {
+        options.where.price = { [Op.gte]: minPrice };
+    }
+    if (maxPrice) {
+        options.where.price = { [Op.lte]: maxPrice };
+    }
+    let allSpots = await Spot.findAll(options);
+
+    allSpots = allSpots.map((spot) => {
+        const reviews = spot.Reviews;
+        const numReviews = reviews.length;
+        let sum = 0;
+        reviews.forEach((review) => {
+            sum += review.stars;
+        });
+        const avgRating = sum / numReviews;
+        spot.dataValues.avgRating = avgRating;
+        delete spot.dataValues.Reviews;
+
+        spot.dataValues.previewImage = "";
+        if (spot.dataValues.SpotImages) {
+            const foundSpotImage = spot.dataValues.SpotImages.find((image) => {
+                return image.preview;
+            });
+            if (foundSpotImage) {
+                spot.dataValues.previewImage = foundSpotImage.url;
+            }
+        }
+
+
+        delete spot.dataValues.SpotImages;
+        return spot;
+    });
+    const resObj = { Spots: allSpots, page, size };
+    return res.status(200).json(resObj);
+});
 
 //Get all Spots owned by the Current User
 
