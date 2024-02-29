@@ -89,28 +89,41 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
         });
     };
 
-    let hasConflict = false;
-    const conflicts = {};
-    const bookingStart = new Date(bookingById.startDate).getTime();
-    const bookingEnd = new Date(bookingById.endDate).getTime();
     const newStart = new Date(startDate).getTime();
     const newEnd = new Date(endDate).getTime();
     const currentTime = new Date().getTime();
 
-    if (currentTime > bookingEnd) {
+    if (currentTime > new Date(bookingById.endDate).getTime()) {
         return res.status(403).json({
             message: "Past bookings can't be modified",
         });
     }
 
-    // Check for overlap between the existing booking and the new booking
-    if ((newStart <= bookingEnd && newEnd >= bookingStart) || (bookingStart <= newEnd && bookingEnd > newStart)) {
-        hasConflict = true;
-        if ((newStart >= bookingStart && newStart <= bookingEnd) || newStart == bookingStart) {
-            conflicts.startDate = "Start date conflicts with an existing booking";
+    // Check for overlap with other bookings, excluding the current booking
+    const otherBookings = await Booking.findAll({
+        where: {
+            id: {
+                [Op.ne]: bookingId
+            },
+            spotId: bookingById.spotId
         }
-        if ((newEnd >= bookingStart && newEnd <= bookingEnd) || newEnd == bookingEnd) {
-            conflicts.endDate = "End date conflicts with an existing booking";
+    });
+
+    let conflicts = {};
+    let hasConflict = false;
+
+    for (let otherBooking of otherBookings) {
+        const otherStart = new Date(otherBooking.startDate).getTime();
+        const otherEnd = new Date(otherBooking.endDate).getTime();
+
+        if ((newStart < otherEnd && newEnd > otherStart) || (newStart === otherEnd || newEnd === otherStart)) {
+            hasConflict = true;
+            if (newStart <= otherEnd) {
+                conflicts.startDate = "Start date conflicts with another booking";
+            }
+            if (newEnd >= otherStart) {
+                conflicts.endDate = "End date conflicts with another booking";
+            }
         }
     }
 
@@ -127,8 +140,9 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
     });
 
     return res.json(updatedBooking);
-
 });
+
+
 
 //Delete a Booking
 router.delete('/:bookingId', requireAuth, async (req, res, next) => {
