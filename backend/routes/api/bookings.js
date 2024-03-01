@@ -38,7 +38,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
             booking.Spot.dataValues.previewImage = booking.Spot.dataValues.SpotImages[0].url;
             delete booking.Spot.dataValues.SpotImages
         });
-        return res.json(bookings);
+        return res.json({ Bookings: bookings });
     }
 });
 
@@ -84,7 +84,7 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
     }
 
     if (currentUserId !== bookingById.userId) {
-        return res.status(401).json({
+        return res.status(403).json({
             message: "Forbidden",
         });
     };

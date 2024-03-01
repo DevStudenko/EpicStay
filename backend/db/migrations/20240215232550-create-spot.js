@@ -35,10 +35,10 @@ module.exports = {
         type: Sequelize.TEXT
       },
       lat: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.FLOAT
       },
       lng: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.FLOAT
       },
       name: {
         type: Sequelize.TEXT
@@ -47,7 +47,7 @@ module.exports = {
         type: Sequelize.TEXT
       },
       price: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.FLOAT
       },
       createdAt: {
         allowNull: false,

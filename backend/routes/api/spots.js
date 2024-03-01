@@ -8,6 +8,16 @@ const { Op } = require('sequelize');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const handleValidateQuery = [
+    (req, res, next) => {
+        // If page is not provided, set it to the default value of 10
+        if (!req.query.page) {
+            req.query.page = 1;
+        }
+        if (!req.query.size) {
+            req.query.size = 20;
+        }
+        next();
+    },
     query("page")
         .isInt({ min: 1 })
         .withMessage("Page must be greater than or equal to 1")
@@ -602,7 +612,7 @@ router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req,
 
     // Check if the location belongs to the current user
     if (currentUserId === location.ownerId) {
-        return res.status(401).json({
+        return res.status(403).json({
             message: "Forbidden",
         });
     }
