@@ -9,38 +9,29 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const handleValidateQuery = [
     (req, res, next) => {
-        // If page is not provided, set it to the default value of 10
-        if (!req.query.page) {
-            req.query.page = 1;
-        }
-        if (!req.query.size) {
-            req.query.size = 20;
-        }
+        // Set default values if parameters are not provided or are empty strings
+        req.query.page = req.query.page || '1';
+        req.query.size = req.query.size || '20';
         next();
     },
     query("page")
-        .isInt({ min: 1 })
-        .withMessage("Page must be greater than or equal to 1")
-        .optional(),
-    query("page")
-        .isInt({ max: 10 })
-        .withMessage("Page must be less than or equal to 10")
+        .if((value) => value !== '') // Apply validation only if the parameter is not an empty string
+        .isInt({ min: 1, max: 10 })
+        .withMessage("Page must be between 1 and 10")
         .optional(),
     query("size")
-        .isInt({ min: 1 })
-        .withMessage("Size must be greater than or equal to 1")
-        .optional(),
-    query("size")
-        .isInt({ max: 20 })
-        .withMessage("Size must be less than or equal to 20")
+        .if((value) => value !== '')
+        .isInt({ min: 1, max: 20 })
+        .withMessage("Size must be between 1 and 20")
         .optional(),
     query("minLat")
+        .if((value) => value !== '')
         .isFloat({ min: -90, max: 90 })
-        .withMessage("Minimum latitude must be -90 or greater")
+        .withMessage("Minimum latitude must be between -90 and 90")
         .bail()
         .custom(async (min, { req }) => {
             const max = req.query.maxLat;
-            if (Number.parseFloat(min) > Number.parseFloat(max)) {
+            if (max !== '' && Number.parseFloat(min) > Number.parseFloat(max)) {
                 throw new Error(
                     "Minimum latitude cannot be greater than maximum latitude"
                 );
@@ -48,12 +39,13 @@ const handleValidateQuery = [
         })
         .optional(),
     query("maxLat")
+        .if((value) => value !== '')
         .isFloat({ min: -90, max: 90 })
-        .withMessage("Maximum latitude must be equal to or less than 90")
+        .withMessage("Maximum latitude must be between -90 and 90")
         .bail()
         .custom(async (max, { req }) => {
             const min = req.query.minLat;
-            if (Number.parseFloat(max) < Number.parseFloat(min)) {
+            if (min !== '' && Number.parseFloat(max) < Number.parseFloat(min)) {
                 throw new Error(
                     "Maximum latitude cannot be less than minimum latitude"
                 );
@@ -61,12 +53,13 @@ const handleValidateQuery = [
         })
         .optional(),
     query("minLng")
+        .if((value) => value !== '')
         .isFloat({ min: -180, max: 180 })
-        .withMessage("Minimum longitude must be -180 or greater")
+        .withMessage("Minimum longitude must be between -180 and 180")
         .bail()
         .custom(async (min, { req }) => {
             const max = req.query.maxLng;
-            if (Number.parseFloat(min) > Number.parseFloat(max)) {
+            if (max !== '' && Number.parseFloat(min) > Number.parseFloat(max)) {
                 throw new Error(
                     "Minimum longitude cannot be greater than maximum longitude"
                 );
@@ -74,12 +67,13 @@ const handleValidateQuery = [
         })
         .optional(),
     query("maxLng")
+        .if((value) => value !== '')
         .isFloat({ min: -180, max: 180 })
-        .withMessage("Maximum longitude must be 180 or less")
+        .withMessage("Maximum longitude must be between -180 and 180")
         .bail()
         .custom(async (max, { req }) => {
             const min = req.query.minLng;
-            if (Number.parseFloat(max) < Number.parseFloat(min)) {
+            if (min !== '' && Number.parseFloat(max) < Number.parseFloat(min)) {
                 throw new Error(
                     "Maximum longitude cannot be less than minimum longitude"
                 );
@@ -87,23 +81,25 @@ const handleValidateQuery = [
         })
         .optional(),
     query("minPrice")
+        .if((value) => value !== '')
         .isFloat({ min: 0 })
         .withMessage("Minimum price must be greater than or equal to 0")
         .bail()
         .custom(async (min, { req }) => {
             const max = req.query.maxPrice;
-            if (Number.parseFloat(min) > Number.parseFloat(max)) {
+            if (max !== '' && Number.parseFloat(min) > Number.parseFloat(max)) {
                 throw new Error("Minimum price cannot be greater than maximum price");
             }
         })
         .optional(),
     query("maxPrice")
+        .if((value) => value !== '')
         .isFloat({ min: 0 })
         .withMessage("Maximum price must be greater than or equal to 0")
         .bail()
         .custom(async (max, { req }) => {
             const min = req.query.minPrice;
-            if (Number.parseFloat(max) < Number.parseFloat(min)) {
+            if (min !== '' && Number.parseFloat(max) < Number.parseFloat(min)) {
                 throw new Error("Maximum price cannot be less than minimum price");
             }
         })
