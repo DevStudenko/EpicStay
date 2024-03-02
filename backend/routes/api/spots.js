@@ -590,8 +590,7 @@ const validateCreateBooking = [
         }),
     handleValidationErrors
 ];
-
-router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req, res, next) => {
+router.post("/:spotId/bookings", requireAuth, validateBooking, async (req, res, next) => {
     const currentUserId = req.user.id;
     const { startDate, endDate } = req.body;
     const { spotId } = req.params;
@@ -616,6 +615,7 @@ router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req,
 
     const existingReservations = location.dataValues.Bookings || [];
     let conflictFound = false;
+    let surroundingConflict = false;
     const conflictMessages = {};
 
     for (let reservation of existingReservations) {
@@ -633,14 +633,27 @@ router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req,
             if ((newEnd >= bookedStart && newEnd <= bookedEnd) || newEnd == bookedEnd) {
                 conflictMessages.endDate = "End date conflicts with an existing booking";
             }
+            // Check if the new reservation completely surrounds an existing reservation
+            if (newStart < bookedStart && newEnd > bookedEnd) {
+                surroundingConflict = true;
+            }
         }
     }
 
     if (conflictFound) {
-        return res.status(403).json({
-            message: "Sorry, this spot is already booked for the specified dates",
-            errors: conflictMessages,
-        });
+        if (surroundingConflict) {
+            return res.status(403).json({
+                message: "Sorry, this spot is already booked for the specified dates",
+                errors: {
+                    error: "Dates overlap an existing booking"
+                }
+            });
+        } else {
+            return res.status(403).json({
+                message: "Sorry, this spot is already booked for the specified dates",
+                errors: conflictMessages,
+            });
+        }
     }
 
     // Create new reservation
@@ -654,6 +667,9 @@ router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req,
 
     return res.status(200).json(booking);
 });
+
+
+
 
 module.exports = router;
 
