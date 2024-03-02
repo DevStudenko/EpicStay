@@ -454,58 +454,80 @@ const validateBooking = [
         }),
     handleValidationErrors
 ];
-router.post('/:spotId/bookings', validateBooking, async (req, res) => {
-    const { spotId } = req.params;
+router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req, res, next) => {
+    const currentUserId = req.user.id;
     const { startDate, endDate } = req.body;
-    const userId = req.user.id; // Assuming req.user.id contains the ID of the authenticated user
+    const { spotId } = req.params;
 
-    // Check if the spot exists and does not belong to the current user
-    const spot = await Spot.findByPk(spotId);
-    if (!spot) {
-        return res.status(404).json({ message: "Spot couldn't be found" });
-    }
-    if (spot.ownerId === userId) {
-        return res.status(403).json({ message: "You cannot book your own spot" });
-    }
-
-    // Check for booking conflicts
-    const conflictingBooking = await Booking.findOne({
-        where: {
-            spotId,
-            [Op.or]: [
-                {
-                    startDate: {
-                        [Op.between]: [startDate, endDate]
-                    }
-                },
-                {
-                    endDate: {
-                        [Op.between]: [startDate, endDate]
-                    }
-                }
-            ]
-        }
+    // Retrieve location information along with associated reservations
+    const location = await Spot.findByPk(spotId, {
+        include: [Booking],
     });
-    if (conflictingBooking) {
-        return res.status(403).json({
-            message: "Sorry, this spot is already booked for the specified dates",
-            errors: {
-                startDate: "Start date conflicts with an existing booking",
-                endDate: "End date conflicts with an existing booking"
-            }
+
+    if (!location) {
+        return res.status(404).json({
+            message: "Spot couldn't be found",
         });
     }
 
-    // Create the booking
+    // Check if the location belongs to the current user
+    if (currentUserId === location.ownerId) {
+        return res.status(403).json({
+            message: "Forbidden",
+        });
+    }
+
+    const existingReservations = location.dataValues.Bookings || [];
+    let conflictFound = false;
+    let surroundingConflict = false;
+    const conflictMessages = {};
+
+    for (let reservation of existingReservations) {
+        const bookedStart = new Date(reservation.startDate).getTime();
+        const bookedEnd = new Date(reservation.endDate).getTime();
+        const newStart = new Date(startDate).getTime();
+        const newEnd = new Date(endDate).getTime();
+
+        // Check for overlap between the existing reservation and the new reservation
+        if ((newStart <= bookedEnd && newEnd >= bookedStart) || (bookedStart <= newEnd && bookedEnd > newStart)) {
+            conflictFound = true;
+            if ((newStart >= bookedStart && newStart <= bookedEnd) || newStart == bookedStart) {
+                conflictMessages.startDate = "Start date conflicts with an existing booking";
+            }
+            if ((newEnd >= bookedStart && newEnd <= bookedEnd) || newEnd == bookedEnd) {
+                conflictMessages.endDate = "End date conflicts with an existing booking";
+            }
+            // Check if the new reservation completely surrounds an existing reservation
+            if (newStart < bookedStart && newEnd > bookedEnd) {
+                surroundingConflict = true;
+            }
+        }
+    }
+
+    if (conflictFound) {
+        if (surroundingConflict) {
+            return res.status(403).json({
+                message: "Dates overlap an existing booking"
+            });
+        } else {
+            return res.status(403).json({
+                message: "Sorry, this spot is already booked for the specified dates",
+                errors: conflictMessages,
+            });
+        }
+    }
+
+    // Create new reservation
     const booking = await Booking.create({
         spotId,
-        userId,
+        userId: currentUserId,
         startDate,
         endDate
     });
 
     return res.status(200).json(booking);
 });
+
 
 
 module.exports = router;
