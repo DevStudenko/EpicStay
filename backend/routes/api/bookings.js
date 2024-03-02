@@ -130,6 +130,16 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
                 surroundingConflict = true;
             }
         }
+        // Check if the new booking's start date is on an existing booking's end date
+        if (newStart === otherEnd) {
+            hasConflict = true;
+            conflicts.startDate = "Start date conflicts with an existing booking";
+        }
+        // Check if the new booking's end date is on an existing booking's start date
+        if (newEnd === otherStart) {
+            hasConflict = true;
+            conflicts.endDate = "End date conflicts with an existing booking";
+        }
     }
 
     if (hasConflict) {
@@ -149,6 +159,7 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
 
     return res.json(updatedBooking);
 });
+
 
 
 //Delete a Booking
