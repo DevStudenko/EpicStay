@@ -87,7 +87,7 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
         return res.status(403).json({
             message: "Forbidden",
         });
-    };
+    }
 
     const newStart = new Date(startDate).getTime();
     const newEnd = new Date(endDate).getTime();
@@ -117,12 +117,12 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
         const otherStart = new Date(otherBooking.startDate).getTime();
         const otherEnd = new Date(otherBooking.endDate).getTime();
 
-        if ((newStart < otherEnd && newEnd > otherStart) || (newStart === otherEnd || newEnd === otherStart)) {
+        if (newStart < otherEnd && newEnd > otherStart) {
             hasConflict = true;
-            if (newStart === otherStart) {
+            if (newStart >= otherStart && newStart <= otherEnd) {
                 conflicts.startDate = "Start date conflicts with an existing booking";
             }
-            if (newEnd === otherEnd) {
+            if (newEnd >= otherStart && newEnd <= otherEnd) {
                 conflicts.endDate = "End date conflicts with an existing booking";
             }
             // Check if the new booking completely surrounds an existing booking
