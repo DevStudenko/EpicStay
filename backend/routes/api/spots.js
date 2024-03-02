@@ -646,7 +646,7 @@ router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req,
             return res.status(403).json({
                 message: "Sorry, this spot is already booked for the specified dates",
                 errors: {
-                    error: "Dates overlap an existing booking"
+                    dates: "Dates overlap an existing booking"
                 }
             });
         } else {
