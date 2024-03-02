@@ -43,7 +43,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
 });
 
 
-// PUT endpoint to update a booking
+// Edit a booking
 const validateBookingUpdate = [
     check('startDate')
         .exists({ checkFalsy: true })
@@ -111,6 +111,7 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
 
     let conflicts = {};
     let hasConflict = false;
+    let surroundingConflict = false;
 
     for (let otherBooking of otherBookings) {
         const otherStart = new Date(otherBooking.startDate).getTime();
@@ -118,16 +119,23 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
 
         if ((newStart < otherEnd && newEnd > otherStart) || (newStart === otherEnd || newEnd === otherStart)) {
             hasConflict = true;
-            if (newStart <= otherEnd) {
-                conflicts.startDate = "Start date conflicts with another booking";
+            if (newStart === otherStart) {
+                conflicts.startDate = "Start date conflicts with an existing booking";
             }
-            if (newEnd >= otherStart) {
-                conflicts.endDate = "End date conflicts with another booking";
+            if (newEnd === otherEnd) {
+                conflicts.endDate = "End date conflicts with an existing booking";
+            }
+            // Check if the new booking completely surrounds an existing booking
+            if (newStart < otherStart && newEnd > otherEnd) {
+                surroundingConflict = true;
             }
         }
     }
 
     if (hasConflict) {
+        if (surroundingConflict) {
+            conflicts = { dates: "Dates overlap an existing booking" };
+        }
         return res.status(403).json({
             message: "Sorry, this spot is already booked for the specified dates",
             errors: conflicts,
@@ -141,7 +149,6 @@ router.put('/:bookingId', requireAuth, validateBookingUpdate, async (req, res, n
 
     return res.json(updatedBooking);
 });
-
 
 
 //Delete a Booking
