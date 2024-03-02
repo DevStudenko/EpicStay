@@ -590,7 +590,7 @@ const validateCreateBooking = [
         }),
     handleValidationErrors
 ];
-router.post("/:spotId/bookings", requireAuth, validateBooking, async (req, res, next) => {
+router.post("/:spotId/bookings", requireAuth, validateCreateBooking, async (req, res, next) => {
     const currentUserId = req.user.id;
     const { startDate, endDate } = req.body;
     const { spotId } = req.params;
