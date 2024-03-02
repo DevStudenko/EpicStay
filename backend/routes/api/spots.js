@@ -155,8 +155,8 @@ router.get("/", handleValidateQuery, async (req, res) => {
         reviews.forEach((review) => {
             sum += review.stars;
         });
-        const avgRating = sum / numReviews;
-        spot.dataValues.avgRating = avgRating;
+        const avgStarRating = sum / numReviews;
+        spot.dataValues.avgStarRating = avgStarRating;
         delete spot.dataValues.Reviews;
 
         spot.dataValues.previewImage = "";
@@ -196,7 +196,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
     });
 
     let modifiedSpots = []; // Array to store modified spot objects
-    let spotObj, count, total
+    let spotObj, count, total;
     spots.forEach(spot => {
         spotObj = spot.toJSON();
         count = spotObj.Reviews.length;
@@ -206,7 +206,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
             total += review.stars;
         }
 
-        spotObj.avgStarRating = count > 0 ? total / count : 0; // Handle case where count is 0
+        spotObj.avgStarRating = count > 0 ? total / count : null; // Set to null if there are no reviews
         spotObj.previewImage = spotObj.SpotImages[0] ? spotObj.SpotImages[0].url : null; // Handle case where there are no images
         delete spotObj.Reviews;
         delete spotObj.SpotImages;
@@ -214,9 +214,10 @@ router.get('/current', requireAuth, async (req, res, next) => {
         // Add modified spot object to the array
         modifiedSpots.push(spotObj);
     });
-    const response = { Spots: modifiedSpots }
+    const response = { Spots: modifiedSpots };
     return res.json(response);
 });
+
 
 //get spot by spotId
 router.get('/:spotId', async (req, res, next) => {
