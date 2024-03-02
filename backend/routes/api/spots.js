@@ -109,9 +109,7 @@ const handleValidateQuery = [
 
 // Get all Spots
 router.get("/", handleValidateQuery, async (req, res) => {
-    let { page, size, maxLat, minLat, minLng, maxLng } = req.query;
-    let minPrice = req.query.minPrice;
-    let maxPrice = req.query.maxPrice;
+    let { page, size, maxLat, minLat, minLng, maxLng, minPrice, maxPrice } = req.query;
     page = parseInt(page) || 1;
     size = parseInt(size) || 20;
 
@@ -128,24 +126,13 @@ router.get("/", handleValidateQuery, async (req, res) => {
         offset,
     };
 
-    if (minLat) {
-        options.where.lat = { [Op.gte]: minLat };
-    }
-    if (maxLat) {
-        options.where.lat = { [Op.lte]: maxLat };
-    }
-    if (minLng) {
-        options.where.lng = { [Op.gte]: minLng };
-    }
-    if (maxLng) {
-        options.where.lng = { [Op.lte]: maxLng };
-    }
-    if (minPrice) {
-        options.where.price = { [Op.gte]: minPrice };
-    }
-    if (maxPrice) {
-        options.where.price = { [Op.lte]: maxPrice };
-    }
+    if (minLat) options.where.lat = { [Op.gte]: minLat };
+    if (maxLat) options.where.lat = { [Op.lte]: maxLat };
+    if (minLng) options.where.lng = { [Op.gte]: minLng };
+    if (maxLng) options.where.lng = { [Op.lte]: maxLng };
+    if (minPrice) options.where.price = { [Op.gte]: minPrice };
+    if (maxPrice) options.where.price = { [Op.lte]: maxPrice };
+
     let allSpots = await Spot.findAll(options);
 
     allSpots = allSpots.map((spot) => {
@@ -159,20 +146,13 @@ router.get("/", handleValidateQuery, async (req, res) => {
         spot.dataValues.avgStarRating = avgStarRating;
         delete spot.dataValues.Reviews;
 
-        spot.dataValues.previewImage = "";
-        if (spot.dataValues.SpotImages) {
-            const foundSpotImage = spot.dataValues.SpotImages.find((image) => {
-                return image.preview;
-            });
-            if (foundSpotImage) {
-                spot.dataValues.previewImage = foundSpotImage.url;
-            }
-        }
-
+        const previewImage = spot.dataValues.SpotImages.find((image) => image.preview);
+        spot.dataValues.previewImage = previewImage ? previewImage.url : null;
 
         delete spot.dataValues.SpotImages;
         return spot;
     });
+
     const resObj = { Spots: allSpots, page, size };
     return res.status(200).json(resObj);
 });
