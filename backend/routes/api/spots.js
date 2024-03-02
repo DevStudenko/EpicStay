@@ -117,12 +117,12 @@ router.get('/:spotId', async (req, res, next) => {
 
         let spotObj = spot.toJSON();
         let count = spotObj.Reviews.length;
-        spotObj.numReviews = count;
+        spotObj.numReviews = count > 0 ? count : null; // Set to null if there are no reviews
         let total = 0;
         spotObj.Reviews.forEach(review => {
             total += review.stars
         });
-        spotObj.avgStarRating = count > 0 ? total / count : 0; // Handle case where count is 0
+        spotObj.avgStarRating = count > 0 ? total / count : null; // Set to null if there are no reviews
 
         spotObj.Owner = spotObj.User;
         delete spotObj.User;
@@ -133,6 +133,7 @@ router.get('/:spotId', async (req, res, next) => {
         next(err);
     }
 });
+
 
 
 //Get all Reviews by a Spot's id
