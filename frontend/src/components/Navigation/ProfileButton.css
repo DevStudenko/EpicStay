@@ -1,0 +1,7 @@
+ul>li {
+    list-style-type: none;
+}
+
+.auth-link:hover {
+    cursor: pointer;
+}
