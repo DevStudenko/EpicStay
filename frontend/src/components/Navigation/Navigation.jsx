@@ -1,33 +1,30 @@
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
+import EpicStayLogo from '../../../../images/EpicStayLogo.png'
+import './Navigation.css'
 
 const Navigation = ({ isLoaded }) => {
     const sessionUser = useSelector(state => state.session.user);
 
     const sessionLinks = sessionUser ? (
-        <li>
+        <div className='nav-right-profile'>
             <ProfileButton user={sessionUser} />
-        </li>
+        </div>
     ) : (
-        <>
-            <li>
-                <NavLink to="/login">Log In</NavLink>
-            </li>
-            <li>
-                <NavLink to="/signup">Sign Up</NavLink>
-            </li>
-        </>
+        <div className='nav-right-auth'>
+            <NavLink className='auth-link' to="/login">Log In</NavLink>
+            <NavLink className='auth-link' to="/signup">Sign Up</NavLink>
+        </div>
     );
 
     return (
-        <ul>
-            <li>
-                <NavLink to="/">Home</NavLink>
-            </li>
+        <nav className='header-nav'>
+            <div className='nav-left'>
+                <NavLink to="/"><img className='nav-logo' src={EpicStayLogo} alt="Logo" /></NavLink>
+            </div>
             {isLoaded && sessionLinks}
-        </ul>
+        </nav>
     );
 }
-
 export default Navigation
