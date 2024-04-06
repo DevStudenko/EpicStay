@@ -2,6 +2,8 @@ import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import EpicStayLogo from '../../../../images/EpicStayLogo.png'
+import OpenModalButton from '../OpenModalButton';
+import LoginFormModal from '../LoginFormModal';
 import './Navigation.css'
 
 const Navigation = ({ isLoaded }) => {
@@ -13,7 +15,10 @@ const Navigation = ({ isLoaded }) => {
         </div>
     ) : (
         <div className='nav-right-auth'>
-            <NavLink className='auth-link' to="/login">Log In</NavLink>
+            <OpenModalButton
+                buttonText="Log In"
+                modalComponent={<LoginFormModal />}
+            />
             <NavLink className='auth-link' to="/signup">Sign Up</NavLink>
         </div>
     );
