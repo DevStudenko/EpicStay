@@ -14,12 +14,22 @@ module.exports = {
       {
         "preview": true,
         "spotId": 1,
-        "url": "https://example.com/image1.jpg"
+        "url": "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg"
       },
       {
         "preview": true,
         "spotId": 3,
-        "url": "https://example.com/image3.jpg"
+        "url": "https://images.pexels.com/photos/259593/pexels-photo-259593.jpeg"
+      },
+      {
+        "preview": true,
+        "spotId": 2,
+        "url": "https://images.pexels.com/photos/1438832/pexels-photo-1438832.jpeg"
+      },
+      {
+        "preview": true,
+        "spotId": 4,
+        "url": "https://images.pexels.com/photos/731082/pexels-photo-731082.jpeg"
       }
 
     ], { validate: true });
