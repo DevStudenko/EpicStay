@@ -23,7 +23,7 @@ const Spots = () => {
                             <h3 className='spot-location'>{city}, {state}</h3>
                             <h3 className='spot-rating'><IoStar />{avgStarRating ? avgStarRating : 'New'}</h3>
                         </div>
-                        <h3 className='spot-price'>${price}</h3>
+                        <h3 className='spot-price'>${price} night</h3>
                     </div>
                 </div>
             ))}
