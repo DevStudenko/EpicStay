@@ -22,6 +22,9 @@ const LoginFormModal = () => {
                 const data = await res.json();
                 if (data && data.errors) {
                     setErrors(data.errors);
+                } else {
+                    setErrors(data);
+
                 }
             });
     };
@@ -39,6 +42,9 @@ const LoginFormModal = () => {
                         required
                     />
                 </label>
+                {errors.credential && (
+                    <p>{errors.credential}</p>
+                )}
                 <label>
                     Password
                     <input
@@ -48,8 +54,11 @@ const LoginFormModal = () => {
                         required
                     />
                 </label>
-                {errors.credential && (
-                    <p>{errors.credential}</p>
+                {errors.password && (
+                    <p>{errors.password}</p>
+                )}
+                {errors.message && (
+                    <p>{errors.message}</p>
                 )}
                 <button type="submit">Log In</button>
             </form>
