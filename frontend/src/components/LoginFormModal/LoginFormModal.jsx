@@ -24,7 +24,6 @@ const LoginFormModal = () => {
                     setErrors(data.errors);
                 } else {
                     setErrors(data);
-
                 }
             });
     };
@@ -60,7 +59,7 @@ const LoginFormModal = () => {
                 {errors.message && (
                     <p>{errors.message}</p>
                 )}
-                <button type="submit">Log In</button>
+                <button disabled={credential.length < 4 || password.length < 6} type="submit">Log In</button>
             </form>
         </>
     );

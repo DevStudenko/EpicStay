@@ -91,3 +91,10 @@ h1 {
     color: #333;
     margin-bottom: 1rem;
 }
+
+button:disabled {
+    /* Styles for the disabled button */
+    background-color: gray;
+    color: darkgray;
+    cursor: not-allowed;
+}

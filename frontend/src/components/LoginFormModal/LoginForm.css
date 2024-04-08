@@ -59,6 +59,8 @@ button[type="submit"]:focus {
     background-color: #0056b3;
 }
 
+
+
 /* Error message styling */
 p {
     color: #ff0000;
