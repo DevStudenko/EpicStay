@@ -5,3 +5,121 @@ ul>li {
 .auth-link:hover {
     cursor: pointer;
 }
+
+.profile-icon {
+    width: 50px;
+    height: 100%;
+    color: #021826;
+}
+
+.profile-arrow {
+    color: #021826;
+    height: 100%;
+    width: 30px;
+
+}
+
+
+.profile-arrow:hover {
+    cursor: pointer
+}
+
+.profile-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100px;
+    position: relative;
+    /* border: 1px solid black; */
+    border-radius: 10px;
+}
+
+
+
+.profile-dropdown {
+    position: absolute;
+    padding: 0;
+    top: 45px;
+    right: 100px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none;
+}
+
+.profile-dropdown.hidden {
+    display: none;
+    /* Keep the dropdown hidden when not active */
+}
+
+.profile-dropdown:not(.hidden) {
+    display: block;
+    /* Show the dropdown when active */
+}
+
+.profile-dropdown .auth-link {
+    padding: 8px 12px;
+    /* Add some padding to the dropdown items */
+    cursor: pointer;
+    /* Change cursor to pointer for better UX */
+    list-style-type: none;
+    color: #021826;
+}
+
+.profile-dropdown .auth-link:hover {
+    background-color: #f0f0f0;
+    font-weight: 600;
+    /* Change background on hover for better UX */
+}
+
+
+.profile-dropdown li {
+    list-style-type: none;
+}
+
+.profile-dropdown .profile-info {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
+.profile-dropdown .profile-info button:hover {
+    cursor: pointer;
+
+
+    font-weight: bold;
+}
+
+.profile-dropdown .profile-info button {
+    border: none;
+    background-color: #50C9D4;
+    border-radius: 10px;
+    padding: 6px;
+    color: white;
+
+
+}
+
+.profile-dropdown .profile-info .profile-item {
+    padding: 5px;
+
+}
+
+.profile-dropdown .profile-logout-button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.profile-dropdown .profile-info button {
+    border: none;
+    background-color: #50C9D4;
+    border-radius: 10px;
+    padding: 6px;
+    color: white;
+    width: 50%;
+}

@@ -6,6 +6,7 @@ import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal'
 import './ProfileButton.css'
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 const ProfileButton = ({ user }) => {
     const dispatch = useDispatch();
@@ -43,29 +44,30 @@ const ProfileButton = ({ user }) => {
 
     return (
         <>
-            <button onClick={toggleMenu}>
-                <FaUserCircle />
-            </button>
+            <div className='profile-container'>
+                <MdOutlineKeyboardArrowDown onClick={toggleMenu} className='profile-arrow' />
+                <FaUserCircle className='profile-icon' />
+            </div>
             <ul className={ulClassName} ref={ulRef}>
                 {user ? (
-                    <>
-                        <li>{user.username}</li>
-                        <li>{user.firstName} {user.lastName}</li>
-                        <li>{user.email}</li>
+                    <div className='profile-info'>
+                        <li className='profile-item'>Hello, {user.firstName}</li>
+                        <li className='profile-item'>email: {user.email}</li>
                         <li>
-                            <button onClick={logout}>Log Out</button>
+                            <div className="profile-logout-button-container">
+
+                                <button onClick={logout}>Log Out</button>
+                            </div>
                         </li>
-                    </>
+                    </div>
                 ) : (
                     <>
                         <OpenModalMenuItem
-                            className='auth-link'
                             itemText="Log In"
                             onItemClick={closeMenu}
                             modalComponent={<LoginFormModal />}
                         />
                         <OpenModalMenuItem
-                            className='auth-link'
                             itemText="Sign Up"
                             onItemClick={closeMenu}
                             modalComponent={<SignupFormModal />}

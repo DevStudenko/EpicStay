@@ -14,7 +14,7 @@ const Spots = () => {
     }, [dispatch])
 
     return (
-        <div className='spot-grid'>
+        <div className='spots-container'>
             {spotsList?.map(({ city, state, avgStarRating, previewImage, price, id }) => (
                 <div className='spot' key={id}>
                     <img src={previewImage} alt="spotImage" />

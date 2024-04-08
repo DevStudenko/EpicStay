@@ -23,14 +23,3 @@
     display: flex;
     flex-direction: column;
 }
-
-.nav-right-auth .auth-link {
-    text-decoration: none;
-    padding: 5px;
-    justify-content: center;
-    align-items: center;
-}
-
-.hidden {
-    display: none;
-}
