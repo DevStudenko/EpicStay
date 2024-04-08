@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import * as sessionActions from '../../store/session';
@@ -13,7 +13,18 @@ const SignupFormModal = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errors, setErrors] = useState({});
-    const { closeModal } = useModal();
+    const { closeModal, modalOpen } = useModal();
+
+    useEffect(() => {
+        // Reset the state when the modal is opened or closed
+        setEmail("");
+        setUsername("");
+        setFirstName("");
+        setLastName("");
+        setPassword("");
+        setConfirmPassword("");
+        setErrors({});
+    }, [modalOpen]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -107,10 +118,10 @@ const SignupFormModal = () => {
                 {errors.confirmPassword && (
                     <p>{errors.confirmPassword}</p>
                 )}
-                <button type="submit">Sign Up</button>
+                <button type="submit" disabled={!email || !username || !firstName || !lastName || !password || !confirmPassword}>Sign Up</button>
             </form>
         </>
     );
 }
 
-export default SignupFormModal
+export default SignupFormModal;

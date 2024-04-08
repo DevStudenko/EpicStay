@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
@@ -11,7 +11,14 @@ const LoginFormModal = () => {
     const [credential, setCredential] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
-    const { closeModal } = useModal();
+    const { closeModal, modalOpen } = useModal();
+
+    useEffect(() => {
+        // Reset the state when the modal is opened or closed
+        setCredential("");
+        setPassword("");
+        setErrors({});
+    }, [modalOpen]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
