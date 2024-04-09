@@ -1,49 +1,4 @@
-.spot {
-    flex: 1 1 10%;
-    margin: 20px;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0px 6px 18px -9px rgba(0, 0, 0, 0.75);
-    transition: transform 100ms ease-in;
-    cursor: pointer;
-    min-width: 300px;
-}
-
-.spot:hover {
-    transform: scale(1.07);
-}
-
-.spot>img {
-    object-fit: cover;
-    /* min-width: 300px;
-    min-height: 200px; */
-    width: 100%;
-    border-radius: 12px;
-    height: 214px;
-}
-
-.spot-info {
-    display: flex;
-    flex-direction: column;
-    padding: 5px;
-}
-
-.spot-loc-rating {
-    display: flex;
-    justify-content: space-between;
-}
-
-.spot-price {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.spot-rating {
-    font-size: 14px;
-    font-weight: 300;
-    margin-top: 8px;
-    margin-bottom: 8px;
-}
+/* Spots.css */
 
 .spots-container {
     display: flex;
@@ -52,11 +7,58 @@
     justify-content: space-evenly;
 }
 
+/* Apply styles to the NavLink (spot-link) */
+.spots-container .spot-link {
+    flex: 1 1 10%;
+    margin: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 6px 18px -9px rgba(0, 0, 0, 0.75);
+    transition: transform 100ms ease-in;
+    cursor: pointer;
+    min-width: 300px;
+    text-decoration: none;
+    /* Remove underline from NavLink */
+    color: inherit;
+    /* Inherit text color */
+}
 
+.spots-container .spot-link:hover {
+    transform: scale(1.07);
+}
 
+.spots-container .spot img {
+    object-fit: cover;
+    width: 100%;
+    border-radius: 12px;
+    height: 214px;
+}
+
+.spots-container .spot-info {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.spots-container .spot-loc-rating {
+    display: flex;
+    justify-content: space-between;
+}
+
+.spots-container .spot-price {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.spots-container .spot-rating {
+    font-size: 14px;
+    font-weight: 300;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
 
 @media only screen and (max-width: 1400px) {
-    .spot {
-        flex: 1 1 33.33%
+    .spots-container .spot-link {
+        flex: 1 1 33.33%;
     }
 }
