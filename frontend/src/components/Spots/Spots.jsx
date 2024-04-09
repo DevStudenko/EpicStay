@@ -15,8 +15,8 @@ const Spots = () => {
 
     return (
         <div className='spots-container'>
-            {spotsList?.map(({ city, state, avgStarRating, previewImage, price, id }) => (
-                <div className='spot' key={id}>
+            {spotsList?.map(({ city, state, avgStarRating, previewImage, price, id, name }) => (
+                <div className='spot' key={id} title={name}>
                     <img src={previewImage} alt="spotImage" />
                     <div className='spot-info'>
                         <div className='spot-loc-rating'>

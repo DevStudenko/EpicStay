@@ -35,6 +35,15 @@ const LoginFormModal = () => {
             });
     };
 
+
+    const handleDemoLogin = (e) => {
+        e.preventDefault();
+        setErrors({});
+        // Use the credentials for the demo user to log in
+        return dispatch(sessionActions.login({ credential: 'demo@user.io', password: 'password' }))
+            .then(closeModal);
+    };
+
     return (
         <>
             <h1>Log In</h1>
@@ -46,6 +55,7 @@ const LoginFormModal = () => {
                         value={credential}
                         onChange={(e) => setCredential(e.target.value)}
                         required
+                        autoComplete="username"
                     />
                 </label>
                 {errors.credential && (
@@ -58,6 +68,7 @@ const LoginFormModal = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        autoComplete="new-password"
                     />
                 </label>
                 {errors.password && (
@@ -67,6 +78,7 @@ const LoginFormModal = () => {
                     <p>{errors.message}</p>
                 )}
                 <button disabled={credential.length < 4 || password.length < 6} type="submit">Log In</button>
+                <button className='demo-login' onClick={handleDemoLogin}>Log in as Demo User</button>
             </form>
         </>
     );

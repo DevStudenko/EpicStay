@@ -43,6 +43,7 @@ const SignupFormModal = () => {
                 .catch(async (res) => {
                     const data = await res.json();
                     if (data?.errors) {
+                        console.log(data.errors);
                         setErrors(data.errors);
                     }
                 });
@@ -93,6 +94,7 @@ const SignupFormModal = () => {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         required
+                        autoComplete="family-name"
                     />
                 </label>
                 {errors.lastName && <p>{errors.lastName}</p>}
@@ -103,6 +105,7 @@ const SignupFormModal = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        autoComplete="new-password"
                     />
                 </label>
                 {errors.password && <p>{errors.password}</p>}
