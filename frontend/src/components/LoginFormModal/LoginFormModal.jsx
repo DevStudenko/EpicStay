@@ -78,7 +78,7 @@ const LoginFormModal = () => {
                     <p>{errors.message}</p>
                 )}
                 <button disabled={credential.length < 4 || password.length < 6} type="submit">Log In</button>
-                <button className='demo-login' onClick={handleDemoLogin}>Log in as Demo User</button>
+                <button className='demo-login' onClick={handleDemoLogin}>Demo Login</button>
             </form>
         </>
     );

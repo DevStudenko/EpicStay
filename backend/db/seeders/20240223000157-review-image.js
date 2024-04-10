@@ -12,16 +12,35 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await ReviewImage.bulkCreate([
       {
-        "reviewId": 1,
-        "url": "https://example.com/image1.jpg"
+        reviewId: 1,
+        url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?spot=1&variation=1"
       },
       {
-        "reviewId": 2,
-        "url": "https://example.com/image2.jpg"
+        reviewId: 4,
+        url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?spot=1&variation=2"
+      },
+      // Review images for reviews of Spot 2
+      {
+        reviewId: 2,
+        url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?spot=2&variation=1"
       },
       {
-        "reviewId": 3,
-        "url": "https://example.com/image3.jpg"
+        reviewId: 5,
+        url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?spot=2&variation=2"
+      },
+      // Review images for reviews of Spot 3
+      {
+        reviewId: 3,
+        url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?spot=3&variation=1"
+      },
+      {
+        reviewId: 6,
+        url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?spot=3&variation=2"
+      },
+      // Review image for review of Spot 4
+      {
+        reviewId: 7,
+        url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?spot=4&variation=1"
       }
     ], { validate: true });
   },

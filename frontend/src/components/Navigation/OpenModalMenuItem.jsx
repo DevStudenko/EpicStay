@@ -1,4 +1,5 @@
 import { useModal } from '../../context/Modal';
+import './ProfileButton.css'
 
 const OpenModalMenuItem = ({
     modalComponent, // component to render inside the modal

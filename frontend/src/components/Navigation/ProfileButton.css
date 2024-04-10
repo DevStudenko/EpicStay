@@ -2,9 +2,6 @@ ul>li {
     list-style-type: none;
 }
 
-.auth-link:hover {
-    cursor: pointer;
-}
 
 .profile-icon {
     width: 50px;
@@ -48,6 +45,7 @@ ul>li {
     display: none;
 }
 
+
 .profile-dropdown.hidden {
     display: none;
     /* Keep the dropdown hidden when not active */
@@ -68,14 +66,18 @@ ul>li {
 }
 
 .profile-dropdown .auth-link:hover {
-    background-color: #f0f0f0;
+    background-color: #69E0E8;
     font-weight: 600;
-    /* Change background on hover for better UX */
+    color: white
 }
 
 
 .profile-dropdown li {
     list-style-type: none;
+}
+
+.profile-dropdown li:hover {
+    background-color: #69E0E8;
 }
 
 .profile-dropdown .profile-info {
@@ -88,18 +90,16 @@ ul>li {
 
 .profile-dropdown .profile-info button:hover {
     cursor: pointer;
-
-
     font-weight: bold;
 }
 
 .profile-dropdown .profile-info button {
     border: none;
-    background-color: #50C9D4;
+    background-color: #ff4500;
     border-radius: 10px;
     padding: 6px;
     color: white;
-
+    width: 50%;
 
 }
 
@@ -108,18 +108,11 @@ ul>li {
 
 }
 
+
+
 .profile-dropdown .profile-logout-button-container {
     display: flex;
     justify-content: center;
     width: 100%;
     margin-top: 5px;
-}
-
-.profile-dropdown .profile-info button {
-    border: none;
-    background-color: #50C9D4;
-    border-radius: 10px;
-    padding: 6px;
-    color: white;
-    width: 50%;
 }

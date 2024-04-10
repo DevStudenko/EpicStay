@@ -58,6 +58,42 @@ module.exports = {
         "name": "DevDemo",
         "description": "demmmoooo",
         "price": 999
+      },
+      {
+        ownerId: 5,
+        address: "101 Example Street",
+        city: "Example City",
+        state: "Example State",
+        country: "Example Country",
+        lat: 123.456,
+        lng: 78.910,
+        name: "Spot Five",
+        description: "A lovely spot for a getaway",
+        price: 150
+      },
+      {
+        ownerId: 6,
+        address: "202 Sample Road",
+        city: "Sample City",
+        state: "Sample State",
+        country: "Sample Country",
+        lat: 234.567,
+        lng: 89.101,
+        name: "Spot Six",
+        description: "A perfect spot for relaxation",
+        price: 200
+      },
+      {
+        ownerId: 7,
+        address: "303 Test Lane",
+        city: "Test City",
+        state: "Test State",
+        country: "Test Country",
+        lat: 345.678,
+        lng: 90.111,
+        name: "Spot Seven",
+        description: "An ideal spot for adventure seekers",
+        price: 250
       }
 
     ], { validate: true });
@@ -67,7 +103,7 @@ module.exports = {
     options.tableName = 'Spots';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      ownerId: { [Op.in]: ['1', '2', '4', '3'] }
+      ownerId: { [Op.in]: [1, 2, 3, 4, 5, 6, 7] }
     }, {});
   }
 };
