@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
+import { NavLink } from 'react-router-dom';
 import './LoginForm.css';
 
 
@@ -59,7 +60,7 @@ const LoginFormModal = () => {
                     />
                 </label>
                 {errors.credential && (
-                    <p>{errors.credential}</p>
+                    <p className='errors'>{errors.credential}</p>
                 )}
                 <label>
                     Password
@@ -72,10 +73,10 @@ const LoginFormModal = () => {
                     />
                 </label>
                 {errors.password && (
-                    <p>{errors.password}</p>
+                    <p className='errors'>{errors.password}</p>
                 )}
                 {errors.message && (
-                    <p>{errors.message}</p>
+                    <p className='errors'>{errors.message}</p>
                 )}
                 <button disabled={credential.length < 4 || password.length < 6} type="submit">Log In</button>
                 <button className='demo-login' onClick={handleDemoLogin}>Demo Login</button>

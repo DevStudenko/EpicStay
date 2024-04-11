@@ -5,8 +5,9 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal'
-import './ProfileButton.css'
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { Link } from 'react-router-dom';
+import './ProfileButton.css'
 
 const ProfileButton = ({ user }) => {
     const dispatch = useDispatch();
@@ -45,6 +46,11 @@ const ProfileButton = ({ user }) => {
     return (
         <>
             <div className='profile-container'>
+                {user && (
+                    <Link to="/new-spot" className="create-new-spot-link">
+                        Create a New Spot
+                    </Link>
+                )}
                 <MdOutlineKeyboardArrowDown onClick={toggleMenu} className='profile-arrow' />
                 <FaUserCircle className='profile-icon' />
             </div>
@@ -52,7 +58,7 @@ const ProfileButton = ({ user }) => {
                 {user ? (
                     <div className='profile-info'>
                         <li className='profile-item'>Hello, {user.firstName}</li>
-                        <li className='profile-item'>email: {user.email}</li>
+                        <li className='profile-item'>{user.email}</li>
                         <li>
                             <div className="profile-logout-button-container">
 

@@ -35,7 +35,6 @@ export const fetchSpotDetails = (spotId) => async (dispatch) => {
     });
     if (response.ok) {
         const data = await response.json();
-        console.log('*****************Spot DETAILS DATA ' + data);
         dispatch(getSpotDetails(data));
     }
 };
@@ -55,6 +54,7 @@ const spotsReducer = (state = initialState, action) => {
             };
         }
         case GET_SPOT_DETAILS: {
+
             const updatedSpot = { ...state[action.payload.id], ...action.payload };
 
             return {

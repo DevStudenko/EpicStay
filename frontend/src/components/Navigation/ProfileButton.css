@@ -23,12 +23,13 @@ ul>li {
 
 .profile-container {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     width: 100px;
     position: relative;
     /* border: 1px solid black; */
     border-radius: 10px;
+    width: auto;
 }
 
 
@@ -76,9 +77,7 @@ ul>li {
     list-style-type: none;
 }
 
-.profile-dropdown li:hover {
-    background-color: #69E0E8;
-}
+
 
 .profile-dropdown .profile-info {
     padding: 8px 12px;
@@ -90,12 +89,12 @@ ul>li {
 
 .profile-dropdown .profile-info button:hover {
     cursor: pointer;
-    font-weight: bold;
+    background-color: #50b3b9;
 }
 
 .profile-dropdown .profile-info button {
     border: none;
-    background-color: #ff4500;
+    background-color: #69E0E8;
     border-radius: 10px;
     padding: 6px;
     color: white;
@@ -109,10 +108,21 @@ ul>li {
 }
 
 
-
 .profile-dropdown .profile-logout-button-container {
     display: flex;
     justify-content: center;
     width: 100%;
     margin-top: 5px;
+}
+
+.create-new-spot-link {
+    text-decoration: none;
+    font-weight: bold;
+    color: #50b3b9;
+    margin-right: 10px;
+}
+
+.create-new-spot-link:hover {
+    text-decoration: underline;
+
 }

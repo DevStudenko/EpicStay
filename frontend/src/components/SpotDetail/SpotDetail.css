@@ -1,10 +1,25 @@
 .spot-detail {
     margin: 0 auto;
-
-    max-width: 90%;
+    max-width: 1000px;
     height: 100vh;
 }
 
+.spot-detail-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    border-bottom: 2px solid darkgrey;
+    padding-bottom: 20px;
+}
+
+.spot-description {
+    font-size: 15pt;
+
+}
+
+.host-info {
+    margin-bottom: 10px
+}
 
 .spot-images {
     display: grid;
@@ -12,12 +27,18 @@
         "main small small"
         "main small small";
     grid-gap: 16px;
-    width: 100%
+    /* width: 100% */
 }
 
-h1 {
+.spot-name {
     font-size: 2em;
-    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.6em;
+}
+
+.location-info {
+    margin-bottom: 1em;
+    font-size: 1em;
 }
 
 
@@ -41,8 +62,10 @@ h1 {
     /* justify-content: center; */
     /* align-items: center; */
     justify-content: space-between;
-    margin-bottom: 1em;
-    width: 350px;
+
+
+    width: 40%;
+    height: 150px;
     padding: 25px;
     border-radius: 10px;
 }
@@ -78,17 +101,29 @@ h1 {
     font-size: 1em;
 }
 
+.reserve-button:hover {
+    background-color: #e03c00;
+}
+
 .main-image {
     grid-area: main;
+    width: 500px;
 }
 
 .small-image {
     grid-area: small;
 }
 
+.spot-title {
+    width: 55%;
+}
 
 
-
+.spot-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 
 .spot-images {
     position: relative;
@@ -98,4 +133,24 @@ h1 {
     width: 100%;
     object-fit: cover;
     height: 100%;
+}
+
+.review {
+    margin: 20px 20px 0 0
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+}
+
+.review-user {
+    font-weight: bold;
+}
+
+.review-date {
+    font-weight: 500;
+    color: grey;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }

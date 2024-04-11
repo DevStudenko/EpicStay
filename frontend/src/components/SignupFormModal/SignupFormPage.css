@@ -80,7 +80,7 @@ button[type="submit"]:focus {
 }
 
 /* Error message styling */
-p {
+.errors {
     color: #ff0000;
     margin-top: -0.5rem;
 }
