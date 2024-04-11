@@ -1,37 +1,32 @@
-/* Spots.css */
-
 .spots-container {
     display: flex;
     flex-wrap: wrap;
-    margin: 20px;
-    justify-content: space-evenly;
+    padding: 20px;
+    justify-content: center;
+    gap: 20px;
 }
 
-/* Apply styles to the NavLink (spot-link) */
 .spots-container .spot-link {
-    flex: 1 1 10%;
-    margin: 20px;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0px 6px 18px -9px rgba(0, 0, 0, 0.75);
     transition: transform 100ms ease-in;
     cursor: pointer;
-    min-width: 300px;
+    width: calc(25% - 40px);
+    margin-bottom: 20px;
     text-decoration: none;
-    /* Remove underline from NavLink */
     color: inherit;
-    /* Inherit text color */
 }
 
 .spots-container .spot-link:hover {
-    transform: scale(1.07);
+    transform: scale(1.03);
 }
 
 .spots-container .spot img {
     object-fit: cover;
     width: 100%;
-    border-radius: 12px;
     height: 214px;
+    display: block;
 }
 
 .spots-container .spot-info {
@@ -59,6 +54,29 @@
 
 @media only screen and (max-width: 1400px) {
     .spots-container .spot-link {
-        flex: 1 1 33.33%;
+        width: calc(33.33% - 40px);
+        /* 3 column layout */
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .spots-container .spot-link {
+        width: calc(50% - 40px);
+        /* 2 column layout */
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .spots-container .spot-link {
+        width: calc(100% - 40px);
+        /* 1 column layout */
+    }
+}
+}
+
+@media only screen and (min-width: 1201px) {
+    .spots-container .spot-link {
+        flex: 1 1 25%;
+        /* 4 column layout */
     }
 }
