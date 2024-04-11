@@ -47,7 +47,7 @@ const ProfileButton = ({ user }) => {
         <>
             <div className='profile-container'>
                 {user && (
-                    <Link to="/new-spot" className="create-new-spot-link">
+                    <Link to="/spots" className="create-new-spot-link">
                         Create a New Spot
                     </Link>
                 )}

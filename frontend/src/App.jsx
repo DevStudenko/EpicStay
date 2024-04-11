@@ -6,6 +6,7 @@ import Navigation from './components/Navigation';
 import * as sessionActions from './store/session';
 import Spots from './components/Spots';
 import SpotDetail from './components/SpotDetail';
+import CreateNewSpot from './components/CreateNewSpot';
 
 
 const Layout = () => {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: '/spots/:spotId',
         element: <SpotDetail />
+      },
+      {
+        path: '/spots',
+        element: <CreateNewSpot />
       }
     ]
   }

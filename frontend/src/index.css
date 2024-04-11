@@ -1,8 +1,7 @@
-/* TODO: Add sitewide styles */
 /* Box sizing rules */
 
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
