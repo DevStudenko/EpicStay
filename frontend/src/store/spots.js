@@ -3,6 +3,7 @@ import { csrfFetch } from './csrf';
 const GET_ALL_SPOTS = 'spots/getAllSpots';
 const GET_SPOT_DETAILS = 'spots/getSpotDetails';
 const ADD_NEW_SPOT = 'spots/addNewSpot';
+const ADD_IMAGE_TO_SPOT = 'spots/addImageToSpot';
 
 const getAllSpots = (spots) => {
     return {
@@ -20,16 +21,21 @@ const getSpotDetails = (spot) => {
 
 const addNewSpot = (spot) => ({
     type: ADD_NEW_SPOT,
-    payload: spot,
+    payload: spot
+});
+const addImageToSpotAction = (spotId, image) => ({
+    type: ADD_IMAGE_TO_SPOT,
+    payload: { spotId, image },
 });
 
 export const populateSpots = () => async (dispatch) => {
     const response = await csrfFetch('/api/spots', {
         method: 'GET'
     });
-    if (response.ok) {
-        const data = await response.json();
 
+    if (response.ok) {
+        console.log(response);
+        const data = await response.json();
         dispatch(getAllSpots(data));
     }
 }
@@ -44,8 +50,8 @@ export const fetchSpotDetails = (spotId) => async (dispatch) => {
     }
 };
 
-// Thunk Action Creator for creating a new spot
 export const createSpot = (spotData) => async (dispatch) => {
+
     const response = await csrfFetch('/api/spots', {
         method: 'POST',
         headers: {
@@ -54,9 +60,29 @@ export const createSpot = (spotData) => async (dispatch) => {
         body: JSON.stringify(spotData),
     });
 
+    if (!response.ok) {
+        throw new Error('Failed to create spot');
+    }
+
+    const data = await response.json();
+    dispatch(addNewSpot(data));
+    return data;
+};
+
+// Thunk Action Creator for adding an image to a spot
+export const addImageToSpot = (spotId, imageData) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotId}/images`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(imageData),
+    });
+
     if (response.ok) {
         const data = await response.json();
-        dispatch(addNewSpot(data));
+        dispatch(addImageToSpotAction(spotId, data));
+        return data;
     }
 };
 
@@ -87,10 +113,29 @@ const spotsReducer = (state = initialState, action) => {
                 [action.payload.id]: action.payload,
             };
 
+        case ADD_IMAGE_TO_SPOT:
+            const { spotId, image } = action.payload;
+            const spotToUpdate = state[spotId];
+
+            const updatedSpotImages = spotToUpdate.SpotImages
+                ? [...spotToUpdate.SpotImages, image]
+                : [image];
+
+            // !spotToUpdate.previewImage
+            //     ? spotToUpdate[previewImage] = image
+            //     : image
+
+            return {
+                ...state,
+                [spotId]: {
+                    ...spotToUpdate,
+                    SpotImages: updatedSpotImages,
+                    previewImage
+                },
+            };
         default:
             return state;
     }
 };
 
-
-export default spotsReducer
+export default spotsReducer;

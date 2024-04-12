@@ -23,11 +23,14 @@ export default function reviewsReducer(state = {}, action) {
     let reviews;
     switch (action.type) {
         case LOAD_REVIEWS:
-            reviews = {
+            const existingReviews = state[action.spotId] || [];
+            const newReviews = action.reviews.filter(newReview =>
+                !existingReviews.some(existingReview => existingReview.id === newReview.id)
+            );
+            return {
                 ...state,
-                [action.spotId]: action.reviews
-            }
-            return reviews
+                [action.spotId]: [...existingReviews, ...newReviews]
+            };
         default:
             return state
     }

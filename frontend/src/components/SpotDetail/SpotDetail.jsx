@@ -26,15 +26,15 @@ const SpotDetail = () => {
                 <div className="location-info">{spot.city}, {spot.state}, {spot.country}</div>
 
             </div>
-            <div className="spot-images">
-                {spot.SpotImages.map((image, index) => (
-                    <img
-                        key={index}
-                        src={image.url}
-                        alt={`Spot Image ${index + 1}`}
-                        className={image.preview === true ? 'main-image' : `small-image${index}`}
-                    />
-                ))}
+            <div className={`spot-images ${spot.SpotImages.length === 1 ? 'single-image' : ''}`}>
+                <img className="main-image" src={spot.previewImage} alt="Main Image" />
+                {spot.SpotImages.length > 1 && (
+                    <div className="nested-grid">
+                        {spot.SpotImages.slice(1).map((image, index) => (
+                            <img key={index} className="small-image" src={image.url} alt={`Image ${index + 2}`} />
+                        ))}
+                    </div>
+                )}
             </div>
             <div className="spot-detail-info">
                 <div className="spot-title">

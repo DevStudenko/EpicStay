@@ -23,11 +23,8 @@
 
 .spot-images {
     display: grid;
-    grid-template-areas:
-        "main small small"
-        "main small small";
+    grid-template-columns: 50% 50%;
     grid-gap: 16px;
-    /* width: 100% */
 }
 
 .spot-name {
@@ -106,12 +103,23 @@
 }
 
 .main-image {
-    grid-area: main;
-    width: 500px;
+    grid-column: 1;
+    width: 100%;
+    height: auto;
+}
+
+.nested-grid {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 16px;
 }
 
 .small-image {
-    grid-area: small;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .spot-title {
@@ -133,6 +141,10 @@
     width: 100%;
     object-fit: cover;
     height: 100%;
+}
+
+.spot-images.single-image .main-image {
+    grid-column: 1 / -1;
 }
 
 .review {

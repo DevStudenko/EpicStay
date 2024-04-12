@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { createSpot } from '../../store/spots';
-import './CreateNewSpot.css'
+import { createSpot, addImageToSpot } from '../../store/spots';
+import './CreateNewSpot.css';
 
 const CreateNewSpot = () => {
     const [country, setCountry] = useState('');
@@ -15,29 +15,44 @@ const CreateNewSpot = () => {
     const [title, setTitle] = useState('');
     const [price, setPrice] = useState('');
     const [imageUrls, setImageUrls] = useState(['']);
+    const [errors, setErrors] = useState({});
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrors({});
+
         const formData = {
             country,
             address,
             city,
             state,
-            latitude,
-            longitude,
+            lat: Number(latitude) || undefined,
+            lng: Number(longitude) || undefined,
             description,
-            title,
-            price,
-            imageUrls
+            name: title,
+            price: Number(price)
         };
-        dispatch(createSpot(formData));
-        navigate('/spots'); // Assuming this is the route where you show all spots
+
+        const newSpot = await dispatch(createSpot(formData));
+
+        if (newSpot) {
+            for (let url of imageUrls) {
+                if (url !== '') {
+                    await dispatch(addImageToSpot(newSpot.id, { url, preview: imageUrls.indexOf(url) === 0 }));
+                }
+            }
+
+            navigate(`/spots/${newSpot.id}`);
+        }
+
     };
 
     const addImageField = () => {
-        setImageUrls([...imageUrls, '']);
+        if (imageUrls.length < 5) {
+            setImageUrls([...imageUrls, '']);
+        }
     };
 
     const updateImageField = (index, url) => {
@@ -48,14 +63,16 @@ const CreateNewSpot = () => {
 
     const renderImageFields = () => {
         return imageUrls.map((url, index) => (
-            <input
-                key={index}
-                type="text"
-                placeholder={`Image URL ${index + 1}`}
-                value={url}
-                onChange={(e) => updateImageField(index, e.target.value)}
-                required={index === 0} // make the first image URL required
-            />
+            <div key={index}>
+                <input
+                    type="text"
+                    placeholder={`Image URL ${index + 1}`}
+                    value={url}
+                    onChange={(e) => updateImageField(index, e.target.value)}
+                    required={index === 0}
+                />
+                {errors && errors[`imageUrl${index}`] && <p className="error-message">{errors[`imageUrl${index}`]}</p>}
+            </div>
         ));
     };
 
@@ -73,6 +90,7 @@ const CreateNewSpot = () => {
                         onChange={(e) => setCountry(e.target.value)}
                         required
                     />
+                    {errors && errors.country && <p className="error-message">{errors.country}</p>}
                 </div>
 
                 <div className="form-group">
@@ -84,6 +102,7 @@ const CreateNewSpot = () => {
                         onChange={(e) => setAddress(e.target.value)}
                         required
                     />
+                    {errors && errors.address && <p className="error-message">{errors.address}</p>}
                 </div>
 
                 <div className="form-group">
@@ -95,6 +114,7 @@ const CreateNewSpot = () => {
                         onChange={(e) => setCity(e.target.value)}
                         required
                     />
+                    {errors && errors.city && <p className="error-message">{errors.city}</p>}
                 </div>
 
                 <div className="form-group">
@@ -106,6 +126,7 @@ const CreateNewSpot = () => {
                         onChange={(e) => setState(e.target.value)}
                         required
                     />
+                    {errors && errors.state && <p className="error-message">{errors.state}</p>}
                 </div>
 
                 <div className="form-group">
@@ -117,6 +138,7 @@ const CreateNewSpot = () => {
                         value={latitude}
                         onChange={(e) => setLatitude(e.target.value)}
                     />
+                    {errors && errors.lat && <p className="error-message">{errors.lat}</p>}
                 </div>
 
                 <div className="form-group">
@@ -127,6 +149,7 @@ const CreateNewSpot = () => {
                         value={longitude}
                         onChange={(e) => setLongitude(e.target.value)}
                     />
+                    {errors && errors.lng && <p className="error-message">{errors.lng}</p>}
                 </div>
 
                 <div className="form-group">
@@ -138,11 +161,12 @@ const CreateNewSpot = () => {
                         onChange={(e) => setDescription(e.target.value)}
                         required
                     />
+                    {errors && errors.description && <p className="error-message">{errors.description}</p>}
                 </div>
 
                 <div className="form-group">
                     <label htmlFor="title">Create a title for your spot</label>
-                    <p className="input-description">Catch guests attention with a spot title that highlights what makes your place special.</p>
+                    <p className="input-description">Catch guests&apos; attention with a spot title that highlights what makes your place special.</p>
                     <input
                         id="title"
                         type="text"
@@ -150,6 +174,7 @@ const CreateNewSpot = () => {
                         onChange={(e) => setTitle(e.target.value)}
                         required
                     />
+                    {errors && errors.name && <p className="error-message">{errors.name}</p>}
                 </div>
 
                 <div className="form-group">
@@ -165,7 +190,7 @@ const CreateNewSpot = () => {
                             required
                         />
                     </div>
-
+                    {errors && errors.price && <p className="error-message">{errors.price}</p>}
                 </div>
 
                 <div className="form-group">
