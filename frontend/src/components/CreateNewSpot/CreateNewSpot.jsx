@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { createSpot, addImageToSpot } from '../../store/spots';
+import { fetchSpotDetails } from '../../store/spots';
 import './CreateNewSpot.css';
 
 const CreateNewSpot = () => {
@@ -43,7 +44,8 @@ const CreateNewSpot = () => {
                     await dispatch(addImageToSpot(newSpot.id, { url, preview: imageUrls.indexOf(url) === 0 }));
                 }
             }
-
+            // Fetch spot details again to update state with any changes like previewImage
+            dispatch(fetchSpotDetails(newSpot.id));
             navigate(`/spots/${newSpot.id}`);
         }
 

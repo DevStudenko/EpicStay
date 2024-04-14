@@ -23,6 +23,7 @@ const addNewSpot = (spot) => ({
     type: ADD_NEW_SPOT,
     payload: spot
 });
+
 const addImageToSpotAction = (spotId, image) => ({
     type: ADD_IMAGE_TO_SPOT,
     payload: { spotId, image },
@@ -121,16 +122,11 @@ const spotsReducer = (state = initialState, action) => {
                 ? [...spotToUpdate.SpotImages, image]
                 : [image];
 
-            // !spotToUpdate.previewImage
-            //     ? spotToUpdate[previewImage] = image
-            //     : image
-
             return {
                 ...state,
                 [spotId]: {
                     ...spotToUpdate,
-                    SpotImages: updatedSpotImages,
-                    previewImage
+                    SpotImages: updatedSpotImages
                 },
             };
         default:

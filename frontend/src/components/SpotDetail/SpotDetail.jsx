@@ -11,7 +11,7 @@ const SpotDetail = () => {
     const dispatch = useDispatch();
     const spot = useSelector(state => state.spots[spotId]);
     const reviews = useSelector(state => state.reviews[spotId]);
-    // console.log(reviews)
+
     useEffect(() => {
         dispatch(fetchSpotDetails(spotId));
         dispatch(fetchReviewsBySpotId(spotId))
@@ -27,7 +27,9 @@ const SpotDetail = () => {
 
             </div>
             <div className={`spot-images ${spot.SpotImages.length === 1 ? 'single-image' : ''}`}>
-                <img className="main-image" src={spot.previewImage} alt="Main Image" />
+                <div className="main-image">
+                    <img src={spot.previewImage} alt="Main Image" />
+                </div>
                 {spot.SpotImages.length > 1 && (
                     <div className="nested-grid">
                         {spot.SpotImages.slice(1).map((image, index) => (
