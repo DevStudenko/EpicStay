@@ -18,7 +18,6 @@ if (import.meta.env.MODE !== 'production') {
   window.csrfFetch = csrfFetch;
   window.store = store;
   window.sessionActions = sessionActions;
-  window.addImageToSpot = addImageToSpot;
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

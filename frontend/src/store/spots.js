@@ -35,7 +35,6 @@ export const populateSpots = () => async (dispatch) => {
     });
 
     if (response.ok) {
-        console.log(response);
         const data = await response.json();
         dispatch(getAllSpots(data));
     }
@@ -102,11 +101,18 @@ const spotsReducer = (state = initialState, action) => {
             };
         }
         case GET_SPOT_DETAILS: {
-            const updatedSpot = { ...state[action.payload.id], ...action.payload };
+            const spotDetails = action.payload;
+            if (!spotDetails.previewImage && spotDetails.SpotImages && spotDetails.SpotImages.length) {
+                const previewImg = spotDetails.SpotImages.find(img => img.preview === true);
+                if (previewImg) {
+                    spotDetails.previewImage = previewImg.url;
+                }
+            }
+
             return {
                 ...state,
-                [action.payload.id]: updatedSpot
-            }
+                [spotDetails.id]: spotDetails
+            };
         }
         case ADD_NEW_SPOT:
             return {
@@ -119,9 +125,9 @@ const spotsReducer = (state = initialState, action) => {
             const spotToUpdate = state[spotId];
             const updatedSpotImages = spotToUpdate.SpotImages ? [...spotToUpdate.SpotImages, image] : [image];
 
-            // Update previewImage if the added image is marked as a preview
+            // previewImage if the added image is marked as a preview
             if (image.preview) {
-                spotToUpdate.previewImage = image.url; // Assuming 'url' is the key in your image object
+                spotToUpdate.previewImage = image.url;
             }
 
             return {
