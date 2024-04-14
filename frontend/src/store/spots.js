@@ -117,10 +117,12 @@ const spotsReducer = (state = initialState, action) => {
         case ADD_IMAGE_TO_SPOT:
             const { spotId, image } = action.payload;
             const spotToUpdate = state[spotId];
+            const updatedSpotImages = spotToUpdate.SpotImages ? [...spotToUpdate.SpotImages, image] : [image];
 
-            const updatedSpotImages = spotToUpdate.SpotImages
-                ? [...spotToUpdate.SpotImages, image]
-                : [image];
+            // Update previewImage if the added image is marked as a preview
+            if (image.preview) {
+                spotToUpdate.previewImage = image.url; // Assuming 'url' is the key in your image object
+            }
 
             return {
                 ...state,
