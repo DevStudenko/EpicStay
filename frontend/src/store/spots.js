@@ -114,13 +114,13 @@ const spotsReducer = (state = initialState, action) => {
                 [spotDetails.id]: spotDetails
             };
         }
-        case ADD_NEW_SPOT:
+        case ADD_NEW_SPOT: {
             return {
                 ...state,
                 [action.payload.id]: action.payload,
             };
-
-        case ADD_IMAGE_TO_SPOT:
+        }
+        case ADD_IMAGE_TO_SPOT: {
             const { spotId, image } = action.payload;
             const spotToUpdate = state[spotId];
             const updatedSpotImages = spotToUpdate.SpotImages ? [...spotToUpdate.SpotImages, image] : [image];
@@ -137,9 +137,12 @@ const spotsReducer = (state = initialState, action) => {
                     SpotImages: updatedSpotImages
                 },
             };
+        }
         default:
             return state;
     }
 };
 
 export default spotsReducer;
+
+

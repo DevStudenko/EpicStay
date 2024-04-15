@@ -21,17 +21,19 @@ export const fetchReviewsBySpotId = (spotId) => async (dispatch) => {
 // reviews reducer
 export default function reviewsReducer(state = {}, action) {
     switch (action.type) {
-        case LOAD_REVIEWS:
-            const existingReviews = state[action.spotId] || [];
-            const newReviews = action.reviews.filter(newReview =>
+        case LOAD_REVIEWS: {
+            const { reviews, spotId } = action.payload; // Ensure variables are scoped to this block
+            const existingReviews = state[spotId] || [];
+            const newReviews = reviews.filter(newReview =>
                 !existingReviews.some(existingReview => existingReview.id === newReview.id)
             );
             return {
                 ...state,
-                [action.spotId]: [...existingReviews, ...newReviews]
+                [spotId]: [...existingReviews, ...newReviews]
             };
+        }
         default:
-            return state
+            return state;
     }
 }
 
