@@ -94,7 +94,7 @@ const spotsReducer = (state = initialState, action) => {
     let spotId = '';
     let image = '';
     let spotToUpdate = '';
-    let updatedSpotImages = ''
+    let updatedSpotImages = '';
 
     switch (action.type) {
         case GET_ALL_SPOTS: {
@@ -126,14 +126,15 @@ const spotsReducer = (state = initialState, action) => {
                 ...state,
                 [action.payload.id]: action.payload,
             };
+        }  // Added missing brace here
 
-        case ADD_IMAGE_TO_SPOT:
+        case ADD_IMAGE_TO_SPOT: {
             spotId = action.payload.spotId;
             image = action.payload.image;
             spotToUpdate = state[spotId];
             updatedSpotImages = spotToUpdate.SpotImages ? [...spotToUpdate.SpotImages, image] : [image];
 
-            // previewImage if the added image is marked as a preview
+            // Preview image if the added image is marked as a preview
             if (image.preview) {
                 spotToUpdate.previewImage = image.url;
             }
@@ -152,5 +153,7 @@ const spotsReducer = (state = initialState, action) => {
 };
 
 export default spotsReducer;
+
+
 
 

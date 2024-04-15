@@ -6,7 +6,6 @@ export const loadReviews = (reviews, spotId) => ({
     type: LOAD_REVIEWS,
     reviews,
     spotId
-
 });
 
 // Thunk Action Creator
@@ -20,17 +19,15 @@ export const fetchReviewsBySpotId = (spotId) => async (dispatch) => {
 
 // reviews reducer
 export default function reviewsReducer(state = {}, action) {
-    let existingReviews = '';
-    let newReviews = '';
     switch (action.type) {
-        case LOAD_REVIEWS:
-            existingReviews = state[action.spotId] || [];
-            newReviews = action.reviews.filter(newReview =>
+        case LOAD_REVIEWS: {
+            let existingReviews = state[action.spotId] || [];
+            let newReviews = action.reviews.filter(newReview =>
                 !existingReviews.some(existingReview => existingReview.id === newReview.id)
             );
             return {
                 ...state,
-                [spotId]: [...existingReviews, ...newReviews]
+                [action.spotId]: [...existingReviews, ...newReviews]
             };
         }
         default:
