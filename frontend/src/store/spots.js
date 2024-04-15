@@ -89,9 +89,16 @@ export const addImageToSpot = (spotId, imageData) => async (dispatch) => {
 const initialState = {}
 
 const spotsReducer = (state = initialState, action) => {
+    let newState = {};
+    let spotDetails = '';
+    let spotId = '';
+    let image = '';
+    let spotToUpdate = '';
+    let updatedSpotImages = ''
+
     switch (action.type) {
         case GET_ALL_SPOTS: {
-            const newState = {};
+            newState = {};
             action.payload.Spots.forEach(spot => {
                 newState[spot.id] = spot;
             });
@@ -101,7 +108,7 @@ const spotsReducer = (state = initialState, action) => {
             };
         }
         case GET_SPOT_DETAILS: {
-            const spotDetails = action.payload;
+            spotDetails = action.payload;
             if (!spotDetails.previewImage && spotDetails.SpotImages && spotDetails.SpotImages.length) {
                 const previewImg = spotDetails.SpotImages.find(img => img.preview === true);
                 if (previewImg) {
@@ -121,9 +128,10 @@ const spotsReducer = (state = initialState, action) => {
             };
 
         case ADD_IMAGE_TO_SPOT:
-            const { spotId, image } = action.payload;
-            const spotToUpdate = state[spotId];
-            const updatedSpotImages = spotToUpdate.SpotImages ? [...spotToUpdate.SpotImages, image] : [image];
+            spotId = action.payload.spotId;
+            image = action.payload.image;
+            spotToUpdate = state[spotId];
+            updatedSpotImages = spotToUpdate.SpotImages ? [...spotToUpdate.SpotImages, image] : [image];
 
             // previewImage if the added image is marked as a preview
             if (image.preview) {

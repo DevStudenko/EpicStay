@@ -20,10 +20,12 @@ export const fetchReviewsBySpotId = (spotId) => async (dispatch) => {
 
 // reviews reducer
 export default function reviewsReducer(state = {}, action) {
+    let existingReviews = '';
+    let newReviews = '';
     switch (action.type) {
         case LOAD_REVIEWS:
-            const existingReviews = state[action.spotId] || [];
-            const newReviews = action.reviews.filter(newReview =>
+            existingReviews = state[action.spotId] || [];
+            newReviews = action.reviews.filter(newReview =>
                 !existingReviews.some(existingReview => existingReview.id === newReview.id)
             );
             return {
