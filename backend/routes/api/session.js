@@ -28,6 +28,8 @@ router.post(
     '/',
     validateLogin,
     async (req, res) => {
+        console.log("Received credential:", req.body.credential);
+        console.log("Received CSRF Token:", req.headers['csrf-token']);
         const { credential, password } = req.body;
 
         const user = await User.unscoped().findOne({
@@ -54,6 +56,7 @@ router.post(
         };
 
         await setTokenCookie(res, safeUser);
+
 
         return res.json({
             user: safeUser

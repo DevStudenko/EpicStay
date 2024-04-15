@@ -14,7 +14,7 @@ const CreateNewSpot = () => {
     const [description, setDescription] = useState('');
     const [title, setTitle] = useState('');
     const [price, setPrice] = useState('');
-    const [imageUrls, setImageUrls] = useState(['']);
+    const [imageUrls, setImageUrls] = useState(Array(5).fill(''));
     const [errors, setErrors] = useState({});
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -38,19 +38,12 @@ const CreateNewSpot = () => {
         const newSpot = await dispatch(createSpot(formData));
 
         if (newSpot) {
-            for (let url of imageUrls) {
+            imageUrls.forEach(async (url, index) => {
                 if (url !== '') {
-                    await dispatch(addImageToSpot(newSpot.id, { url, preview: imageUrls.indexOf(url) === 0 }));
+                    await dispatch(addImageToSpot(newSpot.id, { url, preview: index === 0 }));
                 }
-            }
+            });
             navigate(`/spots/${newSpot.id}`);
-        }
-
-    };
-
-    const addImageField = () => {
-        if (imageUrls.length < 5) {
-            setImageUrls([...imageUrls, '']);
         }
     };
 
@@ -60,34 +53,21 @@ const CreateNewSpot = () => {
         setImageUrls(updatedImageUrls);
     };
 
-    const renderImageFields = () => {
-        return imageUrls.map((url, index) => (
-            <div key={index}>
-                <input
-                    type="text"
-                    placeholder={`Image URL ${index + 1}`}
-                    value={url}
-                    onChange={(e) => updateImageField(index, e.target.value)}
-                    required={index === 0}
-                />
-                {errors && errors[`imageUrl${index}`] && <p className="error-message">{errors[`imageUrl${index}`]}</p>}
-            </div>
-        ));
-    };
-
     return (
         <div className="new-spot-form-container">
             <h2>Create a New Spot</h2>
             <form onSubmit={handleSubmit} className="new-spot-form">
                 <div className="form-group">
-                    <label htmlFor="country">Country</label>
+                    <h3>Where is your place located?</h3>
                     <p className="input-description">Guests will only get your exact address once they booked a reservation.</p>
+                    <label htmlFor="country">Country</label>
                     <input
+                        placeholder='Country'
                         id="country"
                         type="text"
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
-                        required
+                    // required
                     />
                     {errors && errors.country && <p className="error-message">{errors.country}</p>}
                 </div>
@@ -95,11 +75,12 @@ const CreateNewSpot = () => {
                 <div className="form-group">
                     <label htmlFor="address">Street Address</label>
                     <input
+                        placeholder='Street Address'
                         id="address"
                         type="text"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        required
+                    // required
                     />
                     {errors && errors.address && <p className="error-message">{errors.address}</p>}
                 </div>
@@ -107,11 +88,12 @@ const CreateNewSpot = () => {
                 <div className="form-group">
                     <label htmlFor="city">City</label>
                     <input
+                        placeholder='City'
                         id="city"
                         type="text"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
-                        required
+                    // required
                     />
                     {errors && errors.city && <p className="error-message">{errors.city}</p>}
                 </div>
@@ -119,19 +101,20 @@ const CreateNewSpot = () => {
                 <div className="form-group">
                     <label htmlFor="state">State</label>
                     <input
+                        placeholder='State'
                         id="state"
                         type="text"
                         value={state}
                         onChange={(e) => setState(e.target.value)}
-                        required
+                    // required
                     />
                     {errors && errors.state && <p className="error-message">{errors.state}</p>}
                 </div>
 
                 <div className="form-group">
                     <label htmlFor="latitude">Latitude</label>
-                    <p className="input-description">Optional - Latitude and Longitude inputs are optional for MVP</p>
                     <input
+                        placeholder='Latitude'
                         id="latitude"
                         type="number"
                         value={latitude}
@@ -143,6 +126,7 @@ const CreateNewSpot = () => {
                 <div className="form-group">
                     <label htmlFor="longitude">Longitude</label>
                     <input
+                        placeholder='Longitude'
                         id="longitude"
                         type="number"
                         value={longitude}
@@ -155,10 +139,11 @@ const CreateNewSpot = () => {
                     <label htmlFor="description">Describe your place to guests</label>
                     <p className="input-description">Mention the best features of your space, any special amenities like fast wifi or parking, and what you love about the neighborhood.</p>
                     <textarea
+                        placeholder='Please write at least 30 characters'
                         id="description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        required
+                    // required
                     />
                     {errors && errors.description && <p className="error-message">{errors.description}</p>}
                 </div>
@@ -167,11 +152,12 @@ const CreateNewSpot = () => {
                     <label htmlFor="title">Create a title for your spot</label>
                     <p className="input-description">Catch guests&apos; attention with a spot title that highlights what makes your place special.</p>
                     <input
+                        placeholder='Name of your spot'
                         id="title"
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        required
+                    // required
                     />
                     {errors && errors.name && <p className="error-message">{errors.name}</p>}
                 </div>
@@ -182,24 +168,34 @@ const CreateNewSpot = () => {
                     <div className="price">
                         <span className='dollar-sign'>$</span>
                         <input
+                            placeholder='Price per night (USD)'
                             id="price"
                             type="number"
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
-                            required
+                        // required
                         />
                     </div>
                     {errors && errors.price && <p className="error-message">{errors.price}</p>}
                 </div>
 
                 <div className="form-group">
-                    <p>Liven up your spot with photos</p>
+                    <h3>Liven up your spot with photos</h3>
                     <p className="input-description">Submit a link to at least one photo to publish your spot.</p>
-                    <div className="image-upload-section">
-                        {renderImageFields()}
-                        <button type="button" onClick={addImageField} className="add-image-button">+ Add Another Image</button>
-                    </div>
+                    {imageUrls.map((url, index) => (
+                        <div key={index} className='image-url-input-container'>
+                            <input
+                                type="text"
+                                placeholder={index === 0 ? "Preview Image URL" : "Image URL"}
+                                value={url}
+                                onChange={(e) => updateImageField(index, e.target.value)}
+                            // required={index === 0}
+                            />
+                            {errors && errors[`imageUrl${index}`] && <p className="error-message">{errors[`imageUrl${index}`]}</p>}
+                        </div>
+                    ))}
                 </div>
+
 
                 <button type="submit" className="create-spot-button">Create Spot</button>
             </form>

@@ -63,6 +63,11 @@
     gap: 10px;
 }
 
+.image-url-input-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .add-image-button,
 .create-spot-button {
     background-color: #56CFDA;
