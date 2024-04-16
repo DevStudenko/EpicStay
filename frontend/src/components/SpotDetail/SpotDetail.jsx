@@ -11,6 +11,16 @@ const SpotDetail = () => {
     const dispatch = useDispatch();
     const spot = useSelector(state => state.spots[spotId]);
     const reviews = useSelector(state => state.reviews[spotId]);
+    const sessionUser = useSelector(state => state.session.user);
+    const isOwner = sessionUser && (spot.ownerId === sessionUser.id);
+    const userHasReviewed = sessionUser && Array.isArray(reviews) && reviews.some(review => review.userId === sessionUser.id);
+
+
+
+    const handlePostReviewClick = () => {
+        setShowReviewModal(true);
+    };
+
 
     useEffect(() => {
         dispatch(fetchSpotDetails(spotId));
@@ -67,7 +77,7 @@ const SpotDetail = () => {
             </div>
 
             <div className="reviews-section">
-                {hasReviews && (
+                {hasReviews ? (
                     <>
                         <div className="review-rating">
                             <IoStar className="star-icon" />
@@ -75,6 +85,13 @@ const SpotDetail = () => {
                             <span className='divider'>.</span>
                             <span className="num-reviews">{reviewCountText}</span>
                         </div>
+
+                        {sessionUser && !isOwner && !userHasReviewed && (
+                            <button className="post-review-button" onClick={handlePostReviewClick}>
+                                Post Your Review
+                            </button>
+                        )}
+
                         {sortedReviews.map((review, index) => {
                             const createdAt = new Date(review.createdAt);
                             const monthName = createdAt.toLocaleString('default', { month: 'long' });
@@ -91,12 +108,28 @@ const SpotDetail = () => {
                             )
                         })}
                     </>
-                )}
-                <div className="user-not-logged-in">
-                    <div className="post-review-notice">
-                        Please log in to post a review.
+                ) : (
+                    <div className="no-reviews">
+                        <IoStar className='star-icon' />
+                        <span className='rating'>New</span>
+
+                        {!sessionUser ?
+                            (<div className="post-review-notice">
+                                Please log in to post a review.
+                            </div>) : (
+                                <>
+                                    {!isOwner ? (
+                                        <div className="post-review-action">
+                                            <button className="post-review-button" onClick={handlePostReviewClick}>
+                                                Post Your Review
+                                            </button>
+                                            <p className='first-review-message'>Be the first to post a review!</p>
+                                        </div>
+                                    ) : null}
+                                </>
+                            )}
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );
