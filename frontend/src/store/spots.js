@@ -61,10 +61,12 @@ export const createSpot = (spotData) => async (dispatch) => {
     });
 
     if (!response.ok) {
-        throw new Error('Failed to create spot');
+        const errors = await response.json();
+        throw new Error(errors);
     }
 
     const data = await response.json();
+
     dispatch(addNewSpot(data));
     return data;
 };

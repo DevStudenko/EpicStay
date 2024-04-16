@@ -1,206 +1,241 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState } from "react";
+import { createSpot } from "../../store/spots";
 import { useNavigate } from 'react-router-dom';
-import { createSpot, addImageToSpot } from '../../store/spots';
+import { useDispatch, useSelector } from "react-redux";
+import { addImageToSpot } from "../../store/spots";
 import './CreateNewSpot.css';
 
-const CreateNewSpot = () => {
-    const [country, setCountry] = useState('');
-    const [address, setAddress] = useState('');
-    const [city, setCity] = useState('');
-    const [state, setState] = useState('');
-    const [latitude, setLatitude] = useState('');
-    const [longitude, setLongitude] = useState('');
-    const [description, setDescription] = useState('');
-    const [title, setTitle] = useState('');
-    const [price, setPrice] = useState('');
-    const [imageUrls, setImageUrls] = useState(Array(5).fill(''));
+
+function CreateNewSpot() {
     const [errors, setErrors] = useState({});
+    const [country, setCountry] = useState("");
+    const [state, setState] = useState("");
+    const [streetAddress, setStreetAddress] = useState("");
+    const [city, setCity] = useState("");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [price, setPrice] = useState("");
+    const [images, setImages] = useState(Array(5).fill(''));
+    const [lat, setLat] = useState("");
+    const [lng, setLng] = useState("");
+    const sessionUser = useSelector((state) => state.session.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setErrors({});
 
-        const formData = {
-            country,
-            address,
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        let newErrors = {};
+
+        // Frontend validations
+        if (!country) newErrors.country = 'Country is required';
+        if (!streetAddress) newErrors.streetAddress = 'Street Address is required';
+        if (!city) newErrors.city = 'City is required';
+        if (!state) newErrors.state = 'State is required';
+        if (!title) newErrors.title = 'Title is required';
+        if (description.length < 30) newErrors.description = 'Description must be at least 30 characters';
+        if (!price) newErrors.price = 'Price is required';
+        if (!images[0]) newErrors.previewImage = 'Preview Image is required';
+
+        // Update the state with any new errors
+        setErrors(newErrors);
+
+        // If there are any frontend errors, stop here
+        if (Object.keys(errors).length > 0) return;
+
+        // Proceed with backend submission if frontend validations pass
+        dispatch(createSpot({
+            address: streetAddress,
             city,
             state,
-            lat: Number(latitude) || undefined,
-            lng: Number(longitude) || undefined,
-            description,
+            country,
+            lat,
+            lng,
             name: title,
-            price: Number(price)
-        };
-
-        const newSpot = await dispatch(createSpot(formData));
-
-        if (newSpot) {
-            imageUrls.forEach(async (url, index) => {
-                if (url !== '') {
-                    await dispatch(addImageToSpot(newSpot.id, { url, preview: index === 0 }));
-                }
+            description,
+            price
+        })).then(data => {
+            const imagePromises = images.filter(url => url !== '').map((url, index) => {
+                return dispatch(addImageToSpot(data.id, { url, preview: index === 0 }));
             });
-            navigate(`/spots/${newSpot.id}`);
-        }
+
+            Promise.all(imagePromises)
+                .then(() => navigate(`/spots/${data.id}`))
+                .catch(err => {
+                    console.error("Failed to add images to spot:", err);
+                });
+        }).catch(async (res) => {
+            console.log('this is inside catch')
+            if (res.ok === false) {
+                const data = await res.json();
+                if (data && data.errors) {
+                    // Combine backend errors with the current state (if any)
+                    // console.log(data.errors);
+                    setErrors(prevErrors => ({ ...prevErrors, ...data.errors }));
+                }
+            }
+        });
     };
 
-    const updateImageField = (index, url) => {
-        const updatedImageUrls = [...imageUrls];
-        updatedImageUrls[index] = url;
-        setImageUrls(updatedImageUrls);
+    const handleImageChange = (index, value) => {
+        const newImages = [...images];
+        newImages[index] = value;
+        setImages(newImages);
     };
 
-    return (
-        <div className="new-spot-form-container">
-            <h2>Create a New Spot</h2>
-            <form onSubmit={handleSubmit} className="new-spot-form">
-                <div className="form-group">
-                    <h3>Where is your place located?</h3>
-                    <p className="input-description">Guests will only get your exact address once they booked a reservation.</p>
-                    <label htmlFor="country">Country</label>
-                    <input
-                        placeholder='Country'
-                        id="country"
-                        type="text"
-                        value={country}
-                        onChange={(e) => setCountry(e.target.value)}
-                    // required
-                    />
-                    {errors && errors.country && <p className="error-message">{errors.country}</p>}
-                </div>
 
-                <div className="form-group">
-                    <label htmlFor="address">Street Address</label>
-                    <input
-                        placeholder='Street Address'
-                        id="address"
-                        type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                    // required
-                    />
-                    {errors && errors.address && <p className="error-message">{errors.address}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="city">City</label>
-                    <input
-                        placeholder='City'
-                        id="city"
-                        type="text"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                    // required
-                    />
-                    {errors && errors.city && <p className="error-message">{errors.city}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="state">State</label>
-                    <input
-                        placeholder='State'
-                        id="state"
-                        type="text"
-                        value={state}
-                        onChange={(e) => setState(e.target.value)}
-                    // required
-                    />
-                    {errors && errors.state && <p className="error-message">{errors.state}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="latitude">Latitude</label>
-                    <input
-                        placeholder='Latitude'
-                        id="latitude"
-                        type="number"
-                        value={latitude}
-                        onChange={(e) => setLatitude(e.target.value)}
-                    />
-                    {errors && errors.lat && <p className="error-message">{errors.lat}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="longitude">Longitude</label>
-                    <input
-                        placeholder='Longitude'
-                        id="longitude"
-                        type="number"
-                        value={longitude}
-                        onChange={(e) => setLongitude(e.target.value)}
-                    />
-                    {errors && errors.lng && <p className="error-message">{errors.lng}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="description">Describe your place to guests</label>
-                    <p className="input-description">Mention the best features of your space, any special amenities like fast wifi or parking, and what you love about the neighborhood.</p>
-                    <textarea
-                        placeholder='Please write at least 30 characters'
-                        id="description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    // required
-                    />
-                    {errors && errors.description && <p className="error-message">{errors.description}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="title">Create a title for your spot</label>
-                    <p className="input-description">Catch guests&apos; attention with a spot title that highlights what makes your place special.</p>
-                    <input
-                        placeholder='Name of your spot'
-                        id="title"
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    // required
-                    />
-                    {errors && errors.name && <p className="error-message">{errors.name}</p>}
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="price">Set a base price for your spot</label>
-                    <p className="input-description">Competitive pricing can help your listing stand out and rank higher in search results.</p>
-                    <div className="price">
-                        <span className='dollar-sign'>$</span>
-                        <input
-                            placeholder='Price per night (USD)'
-                            id="price"
-                            type="number"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                        // required
-                        />
-                    </div>
-                    {errors && errors.price && <p className="error-message">{errors.price}</p>}
-                </div>
-
-                <div className="form-group">
-                    <h3>Liven up your spot with photos</h3>
-                    <p className="input-description">Submit a link to at least one photo to publish your spot.</p>
-                    {imageUrls.map((url, index) => (
-                        <div key={index} className='image-url-input-container'>
+    return (sessionUser ? (
+        <>
+            <div className="new-spot-form-container">
+                <form className="new-spot-form" onSubmit={handleSubmit}>
+                    <h1>Create a New Spot</h1>
+                    <div className="form-group">
+                        <h2>Where is your place located?</h2>
+                        <p>
+                            Guests will only get your exact address once they booked a
+                            reservation.
+                        </p>
+                        <label>
+                            Country
                             <input
                                 type="text"
-                                placeholder={index === 0 ? "Preview Image URL" : "Image URL"}
-                                value={url}
-                                onChange={(e) => updateImageField(index, e.target.value)}
-                            // required={index === 0}
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value)}
                             />
-                            {errors && errors[`imageUrl${index}`] && <p className="error-message">{errors[`imageUrl${index}`]}</p>}
+                        </label>
+                        {errors.country && <p>{errors.country}</p>}
+                    </div>
+
+
+                    <label>
+                        Street Address
+                        <input
+                            type="text"
+                            value={streetAddress}
+                            onChange={(e) => setStreetAddress(e.target.value)}
+                        />
+                    </label>
+                    {errors.streetAddress && <p>{errors.streetAddress}</p>}
+
+
+                    <div className="form-group-together">
+                        <div className="form-group-left">
+                            <label>
+                                City
+                                <input
+                                    type="text"
+                                    value={city}
+                                    onChange={(e) => setCity(e.target.value)}
+                                />
+                            </label>
+                            {errors.city && <p>{errors.city}</p>}
                         </div>
-                    ))}
-                </div>
+
+                        <div className="form-group-right">
+                            <label>
+                                State
+                                <input
+                                    type="text"
+                                    value={state}
+                                    onChange={(e) => setState(e.target.value)}
+                                />
+                            </label>
+                            {errors.state && <p>{errors.state}</p>}
+                        </div>
+
+                    </div>
 
 
-                <button type="submit" className="create-spot-button">Create Spot</button>
-            </form>
-        </div>
+                    <div className="form-group-together">
+                        <label>
+                            Lat
+                            <input
+                                type="number"
+                                value={lat}
+                                onChange={(e) => setLat(e.target.value)}
+                            />
+                        </label>
+                        {errors.lat && <p>{errors.lat}</p>}
+
+                        <label>
+                            Lng
+                            <input
+                                type="number"
+                                value={lng}
+                                onChange={(e) => setLng(e.target.value)}
+                            />
+                        </label>
+                        {errors.lng && <p>{errors.lng}</p>}
+                    </div>
+
+
+                    <div className="form-group">
+                        <h2>Describe your place to guests</h2>
+                        <p>
+                            Mention the best features of your space, any special amentities like
+                            fast wifi or parking, and what you love about the neighborhood.
+                        </p>
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Please write at least 30 characters"></textarea>
+                        {errors.description && <p>{errors.description}</p>}
+                    </div>
+
+                    <div className="form-group">
+                        <h2>Create a title for your spot</h2>
+                        <p>
+                            Catch guests&#39; attention with a spot title that highlights what makes
+                            your place special.
+                        </p>
+
+                        <input
+                            placeholder="Name of your spot"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                        />
+                        {errors.title && <p>{errors.title}</p>}
+                    </div>
+
+                    <div className="form-group">
+                        <h2>Set a base price for your spot</h2>
+                        <p className="input-description">
+                            Competitive pricing can help your listing stand out and rank higher in
+                            search results.
+                        </p>
+
+                        <input
+                            type="number"
+                            placeholder="Price per night (USD)"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                        />
+                        {errors.price && <p>{errors.price}</p>}
+                    </div>
+
+                    <div className="form-group">
+                        <h2>Liven up your spot with photos</h2>
+                        {images.map((image, index) => (
+                            <div key={index} className="image-upload-section">
+                                <input
+                                    className="image-url-input-container"
+                                    type="text"
+                                    placeholder={index === 0 ? "Preview Image URL" : `Image URL ${index + 1}`}
+                                    value={image}
+                                    onChange={(e) => handleImageChange(index, e.target.value)}
+                                />
+                                {index === 0 && errors.previewImage && <p>{errors.previewImage}</p>}
+                            </div>
+                        ))}
+
+                    </div>
+
+                    <button className="create-spot-button">Create Spot</button>
+                </form>
+            </div>
+        </>
+    ) : <p>Please Log In or Sign up</p>
     );
-};
+}
 
 export default CreateNewSpot;
