@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchSpotDetails } from '../../store/spots';
 import { IoStar } from 'react-icons/io5';
+import CreateReviewModal from '../CreateReview';
+import { useModal } from '../../context/Modal';
 import './SpotDetail.css';
 import { fetchReviewsBySpotId } from '../../store/reviews';
+import { fetchSpotDetails } from '../../store/spots';
 
 const SpotDetail = () => {
     const { spotId } = useParams();
@@ -12,27 +14,29 @@ const SpotDetail = () => {
     const spot = useSelector(state => state.spots[spotId]);
     const reviews = useSelector(state => state.reviews[spotId]);
     const sessionUser = useSelector(state => state.session.user);
-    const isOwner = sessionUser && (spot.ownerId === sessionUser.id);
+    const isOwner = sessionUser && spot && (spot.ownerId === sessionUser.id);
     const userHasReviewed = sessionUser && Array.isArray(reviews) && reviews.some(review => review.userId === sessionUser.id);
-
-
-
-    const handlePostReviewClick = () => {
-        setShowReviewModal(true);
-    };
-
+    const { setModalContent, closeModal } = useModal();
 
     useEffect(() => {
         dispatch(fetchSpotDetails(spotId));
-        dispatch(fetchReviewsBySpotId(spotId))
+        dispatch(fetchReviewsBySpotId(spotId));
     }, [spotId, dispatch]);
 
     if (!spot || !reviews || !spot.SpotImages) return <h1>Loading...</h1>;
 
     const sortedReviews = reviews.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
     const hasReviews = spot.numReviews > 0;
-    const reviewCountText = hasReviews ? `${spot.numReviews} review${spot.numReviews > 1 ? 's' : ''}` : '';
+    const reviewCountText = hasReviews ? `${spot.numReviews} review${spot.numReviews > 1 ? 's' : ''}` : 'No reviews yet';
+
+    const handlePostReviewClick = () => {
+        setModalContent(
+            <CreateReviewModal
+                spotId={spotId}
+                closeModal={closeModal}
+            />
+        );
+    };
 
     return (
         <div className="spot-detail">
@@ -54,12 +58,12 @@ const SpotDetail = () => {
             </div>
             <div className="spot-detail-info">
                 <div className="spot-title">
-                    <h3 className="host-info">Hosted by {spot.Owner.firstName} {spot.Owner.lastName}</h3>
+                    <h3 className="host-info">Hosted by {spot.Owner ? `${spot.Owner.firstName} ${spot.Owner.lastName}` : 'Unavailable'}</h3>
                     <p className="spot-description">{spot.description}</p>
                 </div>
                 <div className="callout-info">
                     <div className="callout-price">
-                        <span className="price">{"$" + spot.price.toFixed(2)}</span>
+                        <span className="price">${spot.price.toFixed(2)}</span>
                         <span className="per-night">/ night</span>
                     </div>
                     <div className="callout-rating">
@@ -100,7 +104,7 @@ const SpotDetail = () => {
                             return (
                                 <div key={index} className="review">
                                     <div className="review-header">
-                                        <span className="review-user">{review.User.firstName}</span>
+                                        <span className="review-user">{review.User?.firstName}</span>
                                     </div>
                                     <h3 className='review-date'>{monthName} {year}</h3>
                                     <p className="review-body">{review.review}</p>
