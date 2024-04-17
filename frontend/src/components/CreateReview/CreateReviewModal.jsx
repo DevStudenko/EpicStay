@@ -26,29 +26,17 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
     const dispatch = useDispatch();
     const [reviewBody, setReviewBody] = useState('');
     const [rating, setRating] = useState(0);
-    const [errors, setErrors] = useState({});
+    const [serverError, setServerError] = useState('');
     const [disabled, setDisabled] = useState(true);
     const sessionUser = useSelector((state) => state.session.user);
 
     useEffect(() => {
-        if (rating === 0 || reviewBody.length < 10) {
-            setDisabled(true);
-        } else {
-            setDisabled(false);
-        }
+        setDisabled(rating === 0 || reviewBody.length < 10);
     }, [rating, reviewBody]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setErrors({});
-
-        if (!rating) {
-            return setErrors({ rating: 'Please provide a star rating' });
-        }
-
-        if (reviewBody.length < 10) {
-            return setErrors({ review: 'Review text must be greater than ten characters' });
-        }
+        setServerError('');
 
         try {
             await dispatch(createReview({
@@ -60,17 +48,16 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
             closeModal();
         } catch (res) {
             const data = await res.json();
-            if (data && data.errors) setErrors(data.errors);
+            if (data && data.message) {
+                setServerError(data.message);
+            }
         }
     };
-
-    const isValid = Object.keys(errors).length === 0;
 
     return (
         <div className='review-modal-container'>
             <h2>How was your stay?</h2>
-            {errors.review && <p>{errors.review}</p>}
-            {errors.rating && <p>{errors.rating}</p>}
+            {serverError && <p className="error-message">Server Error: {serverError}</p>}
 
             <textarea
                 placeholder="Leave your review here..."
@@ -83,7 +70,7 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
                 setRating={setRating}
             />
 
-            <button disabled={disabled || !isValid} onClick={handleSubmit}>
+            <button disabled={disabled} onClick={handleSubmit}>
                 Submit Your Review
             </button>
         </div>
