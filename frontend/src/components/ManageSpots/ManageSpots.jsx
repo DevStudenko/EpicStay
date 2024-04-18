@@ -24,18 +24,25 @@ const ManageSpots = () => {
       <div className='spots-container'>
         {sessionUser && sortedUserSpots.length ?
           sortedUserSpots?.map(({ city, state, avgStarRating, previewImage, price, id, name }) => (
-            <NavLink to={`/spots/${id}`} key={id} className='spot-link'>
-              <div className='spot' key={id} title={name}>
-                <img src={previewImage} alt="spotImage" />
-                <div className='spot-info'>
-                  <div className='spot-loc-rating'>
-                    <h3 className='spot-location'>{city}, {state}</h3>
-                    <h3 className='spot-rating'><IoStar className='star-icon' />{avgStarRating ? avgStarRating.toFixed(1) : "New"}</h3>
+            <div className="spot-wrapper" key={id}>
+              <NavLink to={`/spots/${id}`} key={id} className='spot-link'>
+                <div className='spot' key={id} title={name}>
+                  <img src={previewImage} alt="spotImage" />
+                  <div className='spot-info'>
+                    <div className='spot-loc-rating'>
+                      <h3 className='spot-location'>{city}, {state}</h3>
+                      <h3 className='spot-rating'><IoStar className='star-icon' />{avgStarRating ? avgStarRating.toFixed(1) : "New"}</h3>
+                    </div>
+                    <h3 className='spot-price'>${price} night</h3>
                   </div>
-                  <h3 className='spot-price'>${price} night</h3>
                 </div>
+              </NavLink>
+              <div className="manage-spot-buttons-container">
+                <button>Update</button>
+                <button>Delete</button>
               </div>
-            </NavLink>
+            </div>
+
           )) :
           <NavLink to="/spots/new" className="create-new-spot-link">
             Create a New Spot
