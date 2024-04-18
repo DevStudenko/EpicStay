@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { populateSpots } from '../../store/spots';
+import { fetchAllSpots } from '../../store/spots';
 import { IoStar } from "react-icons/io5";
 import { NavLink } from 'react-router-dom';
 import './Spots.css'
@@ -8,10 +8,10 @@ import './Spots.css'
 const Spots = () => {
     const dispatch = useDispatch();
     const spots = useSelector(state => (state.spots));
-    const spotsList = Object.values(spots);
+    const spotsList = Object.values(spots).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     useEffect(() => {
-        dispatch(populateSpots())
+        dispatch(fetchAllSpots())
     }, [dispatch])
 
     return (

@@ -46,11 +46,12 @@ export const fetchAllSpots = () => async (dispatch) => {
     }
 }
 
-export const fetchUserSpots = (userId) => async (dispatch) => {
+export const fetchUserSpots = () => async (dispatch) => {
     const response = await csrfFetch('/api/spots/current');
     if (response.ok) {
         const data = await response.json();
-        dispatch(populateUserSpots(data));
+
+        dispatch(populateUserSpots(data.Spots));
     }
 }
 
@@ -111,7 +112,7 @@ const spotsReducer = (state = initialState, action) => {
     let image = '';
     let spotToUpdate = '';
     let updatedSpotImages = '';
-    let userSpots = '';
+
     switch (action.type) {
         case GET_ALL_SPOTS: {
             newState = {};
@@ -164,9 +165,11 @@ const spotsReducer = (state = initialState, action) => {
             };
         }
         case GET_USER_SPOTS: {
-            userSpots = action.payload.Spots.map((spot) => ({
-                spot.id
-            }))
+            newState = { ...state };
+            action.payload.forEach(spot => {
+                newState[spot.id] = spot;
+            });
+            return newState;
         }
         default:
             return state;

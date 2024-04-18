@@ -7,7 +7,6 @@ import configureStore from './store';
 import { restoreCSRF, csrfFetch } from './store/csrf';
 import * as sessionActions from './store/session';
 import { Modal, ModalProvider } from './context/Modal';
-import { createSpot } from './store/spots';
 
 
 const store = configureStore();
