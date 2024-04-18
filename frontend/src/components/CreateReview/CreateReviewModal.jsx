@@ -34,10 +34,16 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
         setDisabled(rating === 0 || reviewBody.length < 10);
     }, [rating, reviewBody]);
 
+    const resetModal = () => {
+        setReviewBody('');
+        setRating(0);
+        setServerError('');
+        setDisabled(true);
+        closeModal();
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setServerError('');
-
         try {
             await dispatch(createReview({
                 review: reviewBody,
@@ -45,7 +51,7 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
                 spotId,
                 userId: sessionUser.id
             }));
-            closeModal();
+            resetModal();
         } catch (res) {
             const data = await res.json();
             if (data && data.message) {

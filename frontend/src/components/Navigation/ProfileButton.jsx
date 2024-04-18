@@ -47,7 +47,7 @@ const ProfileButton = ({ user }) => {
         <>
             <div className='profile-container'>
                 {user && (
-                    <Link to="/spots" className="create-new-spot-link">
+                    <Link to="/spots/new" className="create-new-spot-link">
                         Create a New Spot
                     </Link>
                 )}
@@ -59,9 +59,11 @@ const ProfileButton = ({ user }) => {
                     <div className='profile-info'>
                         <li className='profile-item'>Hello, {user.firstName}</li>
                         <li className='profile-item'>{user.email}</li>
+                        <Link to="/spots/current" className="manage-spots-link">
+                            Manage Spots
+                        </Link>
                         <li>
                             <div className="profile-logout-button-container">
-
                                 <button onClick={logout}>Log Out</button>
                             </div>
                         </li>

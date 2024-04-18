@@ -1,18 +1,19 @@
 import { csrfFetch } from './csrf';
 
-const GET_ALL_SPOTS = 'spots/getAllSpots';
-const GET_SPOT_DETAILS = 'spots/getSpotDetails';
-const ADD_NEW_SPOT = 'spots/addNewSpot';
-const ADD_IMAGE_TO_SPOT = 'spots/addImageToSpot';
+const GET_ALL_SPOTS = 'spots/GET_ALL_SPOTS';
+const GET_SPOT_DETAILS = 'spots/GET_SPOT_DETAILS';
+const ADD_NEW_SPOT = 'spots/ADD_NEW_SPOT';
+const ADD_IMAGE_TO_SPOT = 'spots/ADD_IMAGE_TO_SPOT';
+const GET_USER_SPOTS = 'spots/GET_USER_SPOTS';
 
-const getAllSpots = (spots) => {
+const populateAllSpots = (spots) => {
     return {
         type: GET_ALL_SPOTS,
         payload: spots
     }
 }
 
-const getSpotDetails = (spot) => {
+const populateSpotDetails = (spot) => {
     return {
         type: GET_SPOT_DETAILS,
         payload: spot
@@ -24,19 +25,32 @@ const addNewSpot = (spot) => ({
     payload: spot
 });
 
+const populateUserSpots = (spots) => ({
+    type: GET_USER_SPOTS,
+    payload: spots
+})
+
 const addImageToSpotAction = (spotId, image) => ({
     type: ADD_IMAGE_TO_SPOT,
     payload: { spotId, image },
 });
 
-export const populateSpots = () => async (dispatch) => {
+export const fetchAllSpots = () => async (dispatch) => {
     const response = await csrfFetch('/api/spots', {
         method: 'GET'
     });
 
     if (response.ok) {
         const data = await response.json();
-        dispatch(getAllSpots(data));
+        dispatch(populateAllSpots(data));
+    }
+}
+
+export const fetchUserSpots = (userId) => async (dispatch) => {
+    const response = await csrfFetch('/api/spots/current');
+    if (response.ok) {
+        const data = await response.json();
+        dispatch(populateUserSpots(data));
     }
 }
 
@@ -46,7 +60,7 @@ export const fetchSpotDetails = (spotId) => async (dispatch) => {
     });
     if (response.ok) {
         const data = await response.json();
-        dispatch(getSpotDetails(data));
+        dispatch(populateSpotDetails(data));
     }
 };
 
@@ -97,7 +111,7 @@ const spotsReducer = (state = initialState, action) => {
     let image = '';
     let spotToUpdate = '';
     let updatedSpotImages = '';
-
+    let userSpots = '';
     switch (action.type) {
         case GET_ALL_SPOTS: {
             newState = {};
@@ -148,6 +162,11 @@ const spotsReducer = (state = initialState, action) => {
                     SpotImages: updatedSpotImages
                 },
             };
+        }
+        case GET_USER_SPOTS: {
+            userSpots = action.payload.Spots.map((spot) => ({
+                spot.id
+            }))
         }
         default:
             return state;
