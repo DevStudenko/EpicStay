@@ -3,14 +3,14 @@ import { createSpot } from "../../store/spots";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { addImageToSpot } from "../../store/spots";
-import './CreateNewSpot.css';
+import styles from './CreateNewSpot.module.css';
 
 
 const CreateNewSpotForm = () => {
     const [errors, setErrors] = useState({});
     const [country, setCountry] = useState("");
     const [state, setState] = useState("");
-    const [streetAddress, setStreetAddress] = useState("");
+    const [address, setAddress] = useState("");
     const [city, setCity] = useState("");
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -30,7 +30,7 @@ const CreateNewSpotForm = () => {
 
         // Frontend validations
         if (!country) newErrors.country = 'Country is required';
-        if (!streetAddress) newErrors.streetAddress = 'Street Address is required';
+        if (!address) newErrors.address = 'Street Address is required';
         if (!city) newErrors.city = 'City is required';
         if (!state) newErrors.state = 'State is required';
         if (!title) newErrors.title = 'Title is required';
@@ -46,7 +46,7 @@ const CreateNewSpotForm = () => {
 
         // Proceed with backend submission if frontend validations pass
         dispatch(createSpot({
-            address: streetAddress,
+            address,
             city,
             state,
             country,
@@ -85,156 +85,169 @@ const CreateNewSpotForm = () => {
 
 
     return (sessionUser ? (
-        <>
-            <div className="new-spot-form-container">
-                <form className="new-spot-form" onSubmit={handleSubmit}>
-                    <h1>Create a New Spot</h1>
-                    <div className="form-group">
-                        <h2>Where is your place located?</h2>
-                        <p>
-                            Guests will only get your exact address once they booked a
-                            reservation.
-                        </p>
-                        <label>
+        <main className={styles.main}>
+            <h1 className={styles.title}>Create a new Spot</h1>
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <div className={styles.section}>
+                    <h3 className={styles.subtitle}>Where&apos;s your place located?</h3>
+                    <h6 className={styles.title_description}>Guests will only get your exact address once they have booked a reservation.</h6>
+                    <label className={styles.input_group}>
+                        <div className={styles.side_by_side}>
                             Country
-                            <input
-                                type="text"
-                                value={country}
-                                onChange={(e) => setCountry(e.target.value)}
-                            />
-                        </label>
-                        {errors.country && <p>{errors.country}</p>}
-                    </div>
-
-
-                    <label>
-                        Street Address
+                            {errors.country && <p className={styles.error}>{errors.country}</p>}
+                        </div>
                         <input
                             type="text"
-                            value={streetAddress}
-                            onChange={(e) => setStreetAddress(e.target.value)}
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
+                            placeholder="Country"
+                            className={styles.input}
                         />
                     </label>
-                    {errors.streetAddress && <p>{errors.streetAddress}</p>}
-
-
-                    <div className="form-group-together">
-                        <div className="form-group-left">
-                            <label>
+                    <label className={styles.input_group}>
+                        <div className={styles.side_by_side}>
+                            Street Address
+                            {errors.address && <p className={styles.error}>{errors.address}</p>}
+                        </div>
+                        <input
+                            type="text"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            placeholder="Address"
+                            className={styles.input}
+                        />
+                    </label>
+                    <div className={styles.side_by_side}>
+                        <label className={styles.input_group}>
+                            <div className={styles.side_by_side}>
                                 City
-                                <input
-                                    type="text"
-                                    value={city}
-                                    onChange={(e) => setCity(e.target.value)}
-                                />
-                            </label>
-                            {errors.city && <p>{errors.city}</p>}
-                        </div>
-
-                        <div className="form-group-right">
-                            <label>
-                                State
-                                <input
-                                    type="text"
-                                    value={state}
-                                    onChange={(e) => setState(e.target.value)}
-                                />
-                            </label>
-                            {errors.state && <p>{errors.state}</p>}
-                        </div>
-
-                    </div>
-
-
-                    <div className="form-group-together">
-                        <label>
-                            Lat
+                                {errors.city && <p className={styles.error}>{errors.city}</p>}
+                            </div>
                             <input
-                                type="number"
+                                type="text"
+                                value={city}
+                                onChange={(e) => setCity(e.target.value)}
+                                placeholder="City"
+                                className={styles.input}
+                            />
+                        </label>
+                        <label className={styles.input_group}>
+                            <div className={styles.side_by_side}>
+                                State
+                                {errors.state && <p className={styles.error}>{errors.state}</p>}
+                            </div>
+                            <input
+                                type="text"
+                                value={state}
+                                onChange={(e) => setState(e.target.value)}
+                                placeholder="State"
+                                className={styles.input}
+                            />
+                        </label>
+                    </div>
+                    <div className={styles.side_by_side}>
+                        <label className={styles.input_group}>
+                            <div className={styles.side_by_side}>
+                                Latitude
+                                {errors.lat && <p className={styles.error}>{errors.lat}</p>}
+                            </div>
+                            <input
+                                type="text"
                                 value={lat}
                                 onChange={(e) => setLat(e.target.value)}
+                                placeholder="Latitude"
+                                className={styles.input}
                             />
                         </label>
-                        {errors.lat && <p>{errors.lat}</p>}
-
-                        <label>
-                            Lng
+                        <label className={styles.input_group}>
+                            <div className={styles.side_by_side}>
+                                Longitude
+                                {errors.lng && <p className={styles.error}>{errors.lng}</p>}
+                            </div>
                             <input
-                                type="number"
+                                type="text"
                                 value={lng}
                                 onChange={(e) => setLng(e.target.value)}
+                                placeholder="Longitude"
+                                className={styles.input}
                             />
                         </label>
-                        {errors.lng && <p>{errors.lng}</p>}
                     </div>
+                </div>
 
-
-                    <div className="form-group">
-                        <h2>Describe your place to guests</h2>
-                        <p>
-                            Mention the best features of your space, any special amentities like
-                            fast wifi or parking, and what you love about the neighborhood.
-                        </p>
+                <div className={styles.section}>
+                    <h3 className={styles.subtitle}>Describe your place to guests</h3>
+                    <h6 className={styles.title_description}>Mention the best features of your space, any special amenities like fast wifi or parking, and what you love about the neighborhood.</h6>
+                    <label className={styles.input_group}>
+                        Description
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Please write at least 30 characters"></textarea>
-                        {errors.description && <p>{errors.description}</p>}
-                    </div>
+                            rows={8}
+                            placeholder="Please write at least 30 characters"
+                        />
+                        {errors.description && <p className={styles.error}>{errors.description}</p>}
+                    </label>
+                </div>
 
-                    <div className="form-group">
-                        <h2>Create a title for your spot</h2>
-                        <p>
-                            Catch guests&#39; attention with a spot title that highlights what makes
-                            your place special.
-                        </p>
-
+                <div className={styles.section}>
+                    <h3 className={styles.subtitle}>Create a title for your spot</h3>
+                    <h6 className={styles.title_description}>Catch guests&apos; attention with a spot title that highlights was makes your place special.</h6>
+                    <label className={styles.input_group}>
+                        Name of your spot
                         <input
-                            placeholder="Name of your spot"
+                            type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
+                            placeholder="Name of your spot"
+                            className={styles.input}
                         />
-                        {errors.title && <p>{errors.title}</p>}
-                    </div>
+                        {errors.name && <p className={styles.error}>{errors.name}</p>}
+                    </label>
+                </div>
 
-                    <div className="form-group">
-                        <h2>Set a base price for your spot</h2>
-                        <p className="input-description">
-                            Competitive pricing can help your listing stand out and rank higher in
-                            search results.
-                        </p>
+                <div className={styles.section}>
+                    <h3 className={styles.subtitle}>Set a base price for your spot</h3>
+                    <h6 className={styles.title_description}>Competitive pricing can help your listing stand out and rank higher in search results.</h6>
+                    <label className={styles.input_group}>
+                        Price per night (USD)
+                        <div className={styles.price_input}>
+                            $ <input
+                                type="number"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                                placeholder="Price per night (USD)"
+                                className={styles.input}
+                            />
+                        </div>
+                        {errors.price && <p className={styles.error}>{errors.price}</p>}
+                    </label>
+                </div>
 
-                        <input
-                            type="number"
-                            placeholder="Price per night (USD)"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                        />
-                        {errors.price && <p>{errors.price}</p>}
-                    </div>
-
-                    <div className="form-group">
-                        <h2>Liven up your spot with photos</h2>
-                        {images.map((image, index) => (
-                            <div key={index} className="image-upload-section">
+                <div className={styles.section}>
+                    <h3 className={styles.subtitle}>Liven up your spot with photos</h3>
+                    <h6 className={styles.title_description}>Submit a link to at least one photo to publish your spot.</h6>
+                    {images.map((image, index) => (
+                        <div key={index} className={styles.section}>
+                            <label className={styles.input_group}>
                                 <input
-                                    className="image-url-input-container"
+                                    className={styles.input}
                                     type="text"
                                     placeholder={index === 0 ? "Preview Image URL" : `Image URL ${index + 1}`}
                                     value={image}
                                     onChange={(e) => handleImageChange(index, e.target.value)}
                                 />
                                 {index === 0 && errors.previewImage && <p>{errors.previewImage}</p>}
-                            </div>
-                        ))}
+                            </label>
+                        </div>
+                    ))}
+                </div>
 
-                    </div>
+                <button type="submit" className={styles.button}>Create Spot</button>
+            </form>
 
-                    <button className="create-spot-button">Create Spot</button>
-                </form>
-            </div>
-        </>
-    ) : <p>Please Log In or Sign up</p>
+        </main>
+    ) : <p className={styles.title_description}>Please Log In or Sign up</p>
     );
 }
 
