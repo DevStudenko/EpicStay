@@ -111,7 +111,7 @@ const SpotDetail = () => {
                                     </div>
                                     <h3 className='review-date'>{monthName} {year}</h3>
                                     <p className="review-body">{review.review}</p>
-                                    {review.userId === sessionUser.id && (
+                                    {review.userId === sessionUser?.id && (
                                         <OpenModalButton
                                             buttonText="Delete"
                                             modalComponent={<DeleteReviewModal spotId={spotId} reviewId={review.id} />}

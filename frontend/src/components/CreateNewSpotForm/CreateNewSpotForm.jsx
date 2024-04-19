@@ -237,7 +237,7 @@ const CreateNewSpotForm = () => {
                                     value={image}
                                     onChange={(e) => handleImageChange(index, e.target.value)}
                                 />
-                                {index === 0 && errors.previewImage && <p>{errors.previewImage}</p>}
+                                {index === 0 && errors.previewImage && <p className={styles.error}>{errors.previewImage}</p>}
                             </label>
                         </div>
                     ))}

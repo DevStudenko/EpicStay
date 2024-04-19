@@ -1,0 +1,101 @@
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2em;
+    border-radius: 4em;
+    overflow: hidden;
+    gap: 1em;
+    width: 80vw;
+    margin: 0 auto;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    padding: 0;
+    flex-grow: 1;
+}
+
+.button {
+    color: white;
+    width: 100%;
+    border-radius: 0.5em;
+    background-color: #FF7043;
+    padding: 1em 2em;
+    transition: all 0.1s ease-in-out;
+    margin-top: 1em
+}
+
+.button:hover,
+.button:focus {
+    transform: scale(1.02);
+    background-color: #FF5722
+}
+
+.button:disabled {
+    background: lightgray;
+    transform: scale(1);
+    cursor: not-allowed;
+}
+
+.input_group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 0.5em;
+
+}
+
+.input {
+    height: 1.5rem;
+    width: 100%;
+}
+
+.error {
+    color: red;
+    font-weight: 500;
+}
+
+.side_by_side {
+    display: flex;
+    gap: 1em;
+}
+
+.price_input {
+    width: 100%;
+    display: flex;
+    gap: 0.5em;
+}
+
+.section {
+    width: 600px;
+    /* border-bottom: 1px solid black; */
+    transition: all 0.3s ease-in-out;
+}
+
+.section:hover,
+.section:focus {
+    background: rgb(244 244 245);
+}
+
+.subtitle {
+    font-weight: 500;
+}
+
+.title_description {
+    color: rgb(113 113 122);
+    font-weight: 400;
+    font-size: 1em;
+    margin-bottom: 1em;
+}
