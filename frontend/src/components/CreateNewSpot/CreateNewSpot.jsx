@@ -3,7 +3,7 @@ import { createSpot } from "../../store/spots";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { addImageToSpot } from "../../store/spots";
-import './CreateNewSpot.css';
+import styles from "./CreateNewSpot.module.css"
 
 
 function CreateNewSpot() {
@@ -86,7 +86,7 @@ function CreateNewSpot() {
 
     return (sessionUser ? (
         <>
-            <div className="new-spot-form-container">
+            <div className={styles.main}>
                 <form className="new-spot-form" onSubmit={handleSubmit}>
                     <h1>Create a New Spot</h1>
                     <div className="form-group">
