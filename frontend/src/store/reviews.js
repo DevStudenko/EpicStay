@@ -1,5 +1,6 @@
 // Action Types
 import { csrfFetch } from './csrf'
+import { fetchSpotDetails } from './spots'
 
 const LOAD_REVIEWS = 'reviews/LOAD_REVIEWS'
 export const ADD_REVIEW = 'reviews/ADD_REVIEW'
@@ -11,9 +12,9 @@ export const loadReviews = (reviews, spotId) => ({
     spotId
 })
 
-export const addReview = (review, user) => ({
+export const addReview = (review, User) => ({
     type: ADD_REVIEW,
-    payload: { ...review, user }
+    payload: { ...review, User }
 })
 
 // Thunk Action Creators
@@ -38,7 +39,8 @@ export const createReview = ({ spotId, review, stars, user }) => async (dispatch
     })
     if (response.ok) {
         const review = await response.json()
-        dispatch(addReview(review, user))
+        dispatch(addReview(review, user));
+        dispatch(fetchSpotDetails(spotId));
     }
 }
 

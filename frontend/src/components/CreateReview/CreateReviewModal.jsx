@@ -49,7 +49,7 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
                 review: reviewBody,
                 stars: rating,
                 spotId,
-                userId: sessionUser.id
+                user: sessionUser
             }));
             resetModal();
         } catch (res) {
