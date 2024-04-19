@@ -6,7 +6,6 @@ import './CreateReview.css';
 
 const HandleInput = ({ rating, setRating }) => {
     const stars = [1, 2, 3, 4, 5];
-
     return (
         <div className="rating-input">
             {stars.map((star, index) => (
@@ -52,11 +51,9 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
                 user: sessionUser
             }));
             resetModal();
-        } catch (res) {
-            const data = await res.json();
-            if (data && data.message) {
-                setServerError(data.message);
-            }
+        } catch (err) {
+            console.error(err);
+
         }
     };
 
@@ -64,18 +61,15 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
         <div className='review-modal-container'>
             <h2>How was your stay?</h2>
             {serverError && <p className="error-message">Server Error: {serverError}</p>}
-
             <textarea
                 placeholder="Leave your review here..."
                 value={reviewBody}
                 onChange={e => setReviewBody(e.target.value)}
             />
-
             <HandleInput
                 rating={rating}
                 setRating={setRating}
             />
-
             <button disabled={disabled} onClick={handleSubmit}>
                 Submit Your Review
             </button>
@@ -84,3 +78,4 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
 };
 
 export default CreateReviewModal;
+

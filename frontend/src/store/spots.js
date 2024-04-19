@@ -5,6 +5,8 @@ const GET_SPOT_DETAILS = 'spots/GET_SPOT_DETAILS';
 const ADD_NEW_SPOT = 'spots/ADD_NEW_SPOT';
 const ADD_IMAGE_TO_SPOT = 'spots/ADD_IMAGE_TO_SPOT';
 const GET_USER_SPOTS = 'spots/GET_USER_SPOTS';
+const UPDATE_USER_SPOT = 'spots/UPDATE_USER_SPOT';
+const DELETE_USER_SPOT = 'spots/DELETE_USER_SPOT';
 
 const populateAllSpots = (spots) => {
     return {
@@ -103,6 +105,29 @@ export const addImageToSpot = (spotId, imageData) => async (dispatch) => {
     }
 };
 
+export const deleteSpot = (spotId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotId}`, { method: 'DELETE' });
+
+    dispatch({ type: DELETE_USER_SPOT, payload: spotId });
+    return response
+};
+
+export const updateSpot = (spotId, spotData) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(spotData),
+    });
+
+    if (response.ok) {
+        const updatedSpot = await response.json();
+        dispatch(populateSpotDetails(updatedSpot));
+        return updatedSpot;
+    }
+};
+
 const initialState = {}
 
 const spotsReducer = (state = initialState, action) => {
@@ -143,7 +168,7 @@ const spotsReducer = (state = initialState, action) => {
                 ...state,
                 [action.payload.id]: action.payload,
             };
-        }  // Added missing brace here
+        }
 
         case ADD_IMAGE_TO_SPOT: {
             spotId = action.payload.spotId;
@@ -151,7 +176,7 @@ const spotsReducer = (state = initialState, action) => {
             spotToUpdate = state[spotId];
             updatedSpotImages = spotToUpdate.SpotImages ? [...spotToUpdate.SpotImages, image] : [image];
 
-            // Preview image if the added image is marked as a preview
+            // if the added image is marked as a preview
             if (image.preview) {
                 spotToUpdate.previewImage = image.url;
             }
@@ -171,6 +196,19 @@ const spotsReducer = (state = initialState, action) => {
             });
             return newState;
         }
+
+        case UPDATE_USER_SPOT: {
+            newState = { ...state };
+            newState[action.spot.id] = action.spot;
+            return newState;
+        }
+
+        case DELETE_USER_SPOT: {
+            newState = { ...state };
+            delete newState[action.payload];
+            return newState;
+        }
+
         default:
             return state;
     }

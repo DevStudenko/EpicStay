@@ -26,6 +26,7 @@ const CreateNewSpotForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         let newErrors = {};
+        setErrors({});
 
         // Frontend validations
         if (!country) newErrors.country = 'Country is required';
@@ -68,6 +69,7 @@ const CreateNewSpotForm = () => {
             console.log('this is inside catch')
             if (res.ok === false) {
                 const data = await res.json();
+                console.log(data)
                 if (data && data.errors) {
                     setErrors(prevErrors => ({ ...prevErrors, ...data.errors }));
                 }

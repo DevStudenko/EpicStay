@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { IoStar } from 'react-icons/io5';
 import CreateReviewModal from '../CreateReview';
 import { useModal } from '../../context/Modal';
+
 import './SpotDetail.css';
 import { fetchReviewsBySpotId } from '../../store/reviews';
 import { fetchSpotDetails } from '../../store/spots';
