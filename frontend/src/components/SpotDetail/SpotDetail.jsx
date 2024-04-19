@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { IoStar } from 'react-icons/io5';
 import CreateReviewModal from '../CreateReview';
+import DeleteReviewModal from '../DeleteReviewModal';
+import OpenModalButton from '../OpenModalButton';
 import { useModal } from '../../context/Modal';
 
 import './SpotDetail.css';
@@ -109,6 +111,12 @@ const SpotDetail = () => {
                                     </div>
                                     <h3 className='review-date'>{monthName} {year}</h3>
                                     <p className="review-body">{review.review}</p>
+                                    {review.userId === sessionUser.id && (
+                                        <OpenModalButton
+                                            buttonText="Delete"
+                                            modalComponent={<DeleteReviewModal spotId={spotId} reviewId={review.id} />}
+                                        />
+                                    )}
                                 </div>
                             )
                         })}

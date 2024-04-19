@@ -3,7 +3,8 @@ import { csrfFetch } from './csrf'
 import { fetchSpotDetails } from './spots'
 
 const LOAD_REVIEWS = 'reviews/LOAD_REVIEWS'
-export const ADD_REVIEW = 'reviews/ADD_REVIEW'
+const ADD_REVIEW = 'reviews/ADD_REVIEW'
+const DELETE_REVIEW = 'reviews/DELETE_REVIEW';
 
 // Action Creators
 export const loadReviews = (reviews, spotId) => ({
@@ -16,6 +17,12 @@ export const addReview = (review, User) => ({
     type: ADD_REVIEW,
     payload: { ...review, User }
 })
+
+export const deleteReviewAction = (reviewId, spotId) => ({
+    type: DELETE_REVIEW,
+    reviewId,
+    spotId,
+});
 
 // Thunk Action Creators
 export const fetchReviewsBySpotId = (spotId) => async (dispatch) => {
@@ -44,6 +51,16 @@ export const createReview = ({ spotId, review, stars, user }) => async (dispatch
     }
 }
 
+export const deleteReview = (reviewId, spotId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/reviews/${reviewId}`, {
+        method: 'DELETE',
+    });
+
+    if (response.ok) {
+        dispatch(deleteReviewAction(reviewId, spotId));
+    }
+};
+
 // reviews reducer
 export default function reviewsReducer(state = {}, action) {
     switch (action.type) {
@@ -64,6 +81,13 @@ export default function reviewsReducer(state = {}, action) {
             newState[action.payload.spotId].push(action.payload)
             return newState
         }
+
+        case DELETE_REVIEW: {
+            const newState = { ...state };
+            newState[action.spotId] = newState[action.spotId].filter(review => review.id !== action.reviewId);
+            return newState;
+        }
+
         default:
             return state
     }
