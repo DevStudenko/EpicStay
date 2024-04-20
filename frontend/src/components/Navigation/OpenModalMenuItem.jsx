@@ -16,7 +16,7 @@ const OpenModalMenuItem = ({
     };
 
     return (
-        <li className='auth-link' onClick={onClick}>{itemText}</li>
+        <li onClick={onClick}>{itemText}</li>
     );
 }
 

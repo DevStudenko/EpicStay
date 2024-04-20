@@ -4,10 +4,10 @@ import { FaUserCircle } from 'react-icons/fa';
 import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
-import SignupFormModal from '../SignupFormModal'
+import SignupFormModal from '../SignupFormModal';
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { Link } from 'react-router-dom';
-import './ProfileButton.css'
+import styles from './ProfileButton.module.css';
 
 const ProfileButton = ({ user }) => {
     const dispatch = useDispatch();
@@ -15,55 +15,64 @@ const ProfileButton = ({ user }) => {
     const ulRef = useRef();
 
     const toggleMenu = (e) => {
-        e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
-        setShowMenu(!showMenu);
+        e.stopPropagation(); // Prevents click from bubbling up to document and closing menu immediately
+        setShowMenu(prev => !prev); // Toggle menu visibility
     };
 
     useEffect(() => {
-        if (!showMenu) return;
-
         const closeMenu = (e) => {
-            if (!ulRef.current.contains(e.target)) {
+            // Check if click is outside the ref element, and if so, close the menu
+            if (ulRef.current && !ulRef.current.contains(e.target)) {
                 setShowMenu(false);
             }
         };
 
-        document.addEventListener('click', closeMenu);
+        if (showMenu) {
+            // Only add event listener if the menu is open
+            document.addEventListener('click', closeMenu);
+        }
 
-        return () => document.removeEventListener("click", closeMenu);
-    }, [showMenu]);
-
-    const closeMenu = () => setShowMenu(false);
+        return () => {
+            // Cleanup event listener when component unmounts or when menu toggles
+            document.removeEventListener('click', closeMenu);
+        };
+    }, [showMenu]); // Effect dependencies should include showMenu
 
     const logout = (e) => {
         e.preventDefault();
         dispatch(sessionActions.logout());
-        closeMenu();
+        setShowMenu(false); // Close menu when logging out
     };
 
-    const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
+    // Ensure all class names are referenced using styles object
+    const ulClassName = `${styles.profile_dropdown}${showMenu ? '' : ` ${styles.hidden}`}`;
+
 
     return (
         <>
-            <div className='profile-container'>
+            <div className={styles.profile_container}>
                 {user && (
-                    <Link to="/spots/new" className="create-new-spot-link">
+                    <Link to="/spots/new" className={styles.create_new_spot_link}>
                         Create a New Spot
                     </Link>
                 )}
-                <MdOutlineKeyboardArrowDown onClick={toggleMenu} className='profile-arrow' />
-                <FaUserCircle className='profile-icon' />
+                <MdOutlineKeyboardArrowDown onClick={toggleMenu} className={styles.profile_arrow} />
+                <FaUserCircle className={styles.profile_icon} />
             </div>
             <ul className={ulClassName} ref={ulRef}>
                 {user ? (
-                    <div className='profile-info'>
-                        <li className='profile-item'>Hello, {user.firstName}</li>
-                        <li className='profile-item'>{user.email}</li>
-                        <Link to="/spots/current" className="manage-spots-link">
-                            Manage Spots
-                        </Link>
+                    <div className={styles.profile_info}>
+                        <li className={styles.profile_item}>Hello, {user.firstName}</li>
+                        <li className={styles.profile_item}>{user.email}</li>
+                        <li className={styles.profile_item}>
+                            <Link to="/spots/current" className={styles.manage_spots_link}>
+                                Manage Spots
+                            </Link>
+                        </li>
+
+
                         <li>
-                            <div className="profile-logout-button-container">
+                            <div className={styles.profile_logout_button_container}>
                                 <button onClick={logout}>Log Out</button>
                             </div>
                         </li>
@@ -72,12 +81,12 @@ const ProfileButton = ({ user }) => {
                     <>
                         <OpenModalMenuItem
                             itemText="Log In"
-                            onItemClick={closeMenu}
+                            onItemClick={() => setShowMenu(false)}
                             modalComponent={<LoginFormModal />}
                         />
                         <OpenModalMenuItem
                             itemText="Sign Up"
-                            onItemClick={closeMenu}
+                            onItemClick={() => setShowMenu(false)}
                             modalComponent={<SignupFormModal />}
                         />
                     </>
@@ -85,6 +94,7 @@ const ProfileButton = ({ user }) => {
             </ul>
         </>
     );
-}
+};
 
 export default ProfileButton;
+
