@@ -58,6 +58,7 @@ export const deleteReview = (reviewId, spotId) => async (dispatch) => {
 
     if (response.ok) {
         dispatch(deleteReviewAction(reviewId, spotId));
+        dispatch(fetchSpotDetails(spotId));
     }
 };
 
