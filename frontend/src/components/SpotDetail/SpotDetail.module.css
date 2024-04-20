@@ -2,7 +2,7 @@
 .spotDetail {
     margin: 0 auto;
     max-width: 1000px;
-    height: 100vh;
+    max-height: 100vh;
     overflow: hidden;
 }
 
@@ -140,6 +140,10 @@
 
 .review {
     margin: 20px 20px 0 0;
+}
+
+.reviewBody {
+    text-align: left;
 }
 
 .reviewRating {
