@@ -3,35 +3,35 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllSpots } from '../../store/spots';
 import { IoStar } from "react-icons/io5";
 import { NavLink } from 'react-router-dom';
-import './Spots.css'
+import styles from './Spots.module.css';
 
 const Spots = () => {
     const dispatch = useDispatch();
-    const spots = useSelector(state => (state.spots));
+    const spots = useSelector(state => state.spots);
     const spotsList = Object.values(spots).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     useEffect(() => {
-        dispatch(fetchAllSpots())
-    }, [dispatch])
+        dispatch(fetchAllSpots());
+    }, [dispatch]);
 
     return (
-        <div className='spots-container'>
+        <div className={styles.grid}> {/* Use the .grid class here for the container */}
             {spotsList?.map(({ city, state, avgStarRating, previewImage, price, id, name }) => (
-                <NavLink to={`/spots/${id}`} key={id} className='spot-link'>
-                    <div className='spot' key={id} title={name}>
-                        <img src={previewImage} alt="spotImage" />
-                        <div className='spot-info'>
-                            <div className='spot-loc-rating'>
-                                <h3 className='spot-location'>{city}, {state}</h3>
-                                <h3 className='spot-rating'><IoStar className='star-icon' />{avgStarRating ? avgStarRating.toFixed(1) : "New"}</h3>
+                <NavLink to={`/spots/${id}`} key={id} className={styles.spotLink}>
+                    <div className={styles.spot} title={name}>
+                        <img src={previewImage} alt="spot image" className={styles.spotImg} />
+                        <div className={styles.spotInfo}>
+                            <div className={styles.spotLocRating}>
+                                <h3 className={styles.spotLocation}>{city}, {state}</h3>
+                                <h3 className={styles.spotRating}><IoStar className={styles.starIcon} />{avgStarRating ? avgStarRating.toFixed(1) : "New"}</h3>
                             </div>
-                            <h3 className='spot-price'>${price} night</h3>
+                            <h3 className={styles.spotPrice}>${price} per night</h3>
                         </div>
                     </div>
                 </NavLink>
             ))}
         </div>
-    )
+    );
 }
 
-export default Spots
+export default Spots;

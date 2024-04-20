@@ -6,8 +6,7 @@ import CreateReviewModal from '../CreateReview';
 import DeleteReviewModal from '../DeleteReviewModal';
 import OpenModalButton from '../OpenModalButton';
 import { useModal } from '../../context/Modal';
-
-import './SpotDetail.css';
+import styles from './SpotDetail.module.css';
 import { fetchReviewsBySpotId } from '../../store/reviews';
 import { fetchSpotDetails } from '../../store/spots';
 
@@ -26,7 +25,7 @@ const SpotDetail = () => {
         dispatch(fetchReviewsBySpotId(spotId));
     }, [spotId, dispatch]);
 
-    if (!spot || !reviews || !spot.SpotImages) return <h1>Loading...</h1>;
+    if (!spot || !reviews || !spot.SpotImages) return <h1 className={styles.loading}>Loading...</h1>;
 
     const sortedReviews = reviews.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     const hasReviews = spot.numReviews > 0;
@@ -42,59 +41,59 @@ const SpotDetail = () => {
     };
 
     return (
-        <div className="spot-detail">
-            <div className="spot-heading">
-                <h1 className="spot-name">{spot.name}</h1>
-                <div className="location-info">{spot.city}, {spot.state}, {spot.country}</div>
+        <div className={styles.spotDetail}>
+            <div className={styles.spotHeading}>
+                <h1 className={styles.spotName}>{spot.name}</h1>
+                <div className={styles.locationInfo}>{spot.city}, {spot.state}, {spot.country}</div>
             </div>
-            <div className={`spot-images ${spot.SpotImages.length === 1 ? 'single-image' : ''}`}>
-                <div className="main-image">
+            <div className={`${styles.spotImages} ${spot.SpotImages.length === 1 ? styles.singleImage : ''}`}>
+                <div className={styles.mainImage}>
                     <img src={spot.previewImage} alt="Main Image" />
                 </div>
                 {spot.SpotImages.length > 1 && (
-                    <div className="nested-grid">
+                    <div className={styles.nestedGrid}>
                         {spot.SpotImages.slice(1).map((image, index) => (
-                            <img key={index} className="small-image" src={image.url} alt={`Image ${index + 2}`} />
+                            <img key={index} className={styles.smallImage} src={image.url} alt={`Image ${index + 2}`} />
                         ))}
                     </div>
                 )}
             </div>
-            <div className="spot-detail-info">
-                <div className="spot-title">
-                    <h3 className="host-info">Hosted by {spot.Owner ? `${spot.Owner.firstName} ${spot.Owner.lastName}` : 'Unavailable'}</h3>
-                    <p className="spot-description">{spot.description}</p>
+            <div className={styles.spotDetailInfo}>
+                <div className={styles.spotTitle}>
+                    <h3 className={styles.hostInfo}>Hosted by {spot.Owner ? `${spot.Owner.firstName} ${spot.Owner.lastName}` : 'Unavailable'}</h3>
+                    <p className={styles.spotDescription}>{spot.description}</p>
                 </div>
-                <div className="callout-info">
-                    <div className="callout-price">
-                        <span className="price">${spot.price.toFixed(2)}</span>
-                        <span className="per-night">/ night</span>
+                <div className={styles.calloutInfo}>
+                    <div className={styles.calloutPrice}>
+                        <span className={styles.price}>${spot.price.toFixed(2)}</span>
+                        <span className={styles.perNight}>/ night</span>
                     </div>
-                    <div className="callout-rating">
-                        <IoStar className="star-icon" />
-                        <span className="rating">{spot.avgStarRating ? spot.avgStarRating.toFixed(1) : "New"}</span>
+                    <div className={styles.calloutRating}>
+                        <IoStar className={styles.starIcon} />
+                        <span className={styles.rating}>{spot.avgStarRating ? spot.avgStarRating.toFixed(1) : "New"}</span>
                         {hasReviews && (
                             <>
-                                <span className='divider'>.</span>
-                                <span className="num-reviews">{reviewCountText}</span>
+                                <span className={styles.divider}>.</span>
+                                <span className={styles.numReviews}>{reviewCountText}</span>
                             </>
                         )}
                     </div>
-                    <button className="reserve-button" onClick={() => alert('Feature Coming Soon')}>Reserve</button>
+                    <button className={styles.reserveButton} onClick={() => alert('Feature Coming Soon')}>Reserve</button>
                 </div>
             </div>
 
-            <div className="reviews-section">
+            <div className={styles.reviewsSection}>
                 {hasReviews ? (
                     <>
-                        <div className="review-rating">
-                            <IoStar className="star-icon" />
-                            <span className="rating">{spot.avgStarRating ? spot.avgStarRating.toFixed(1) : "New"}</span>
-                            <span className='divider'>.</span>
-                            <span className="num-reviews">{reviewCountText}</span>
+                        <div className={styles.reviewRating}>
+                            <IoStar className={styles.starIcon} />
+                            <span className={styles.rating}>{spot.avgStarRating ? spot.avgStarRating.toFixed(1) : "New"}</span>
+                            <span className={styles.divider}>.</span>
+                            <span className={styles.numReviews}>{reviewCountText}</span>
                         </div>
 
                         {sessionUser && !isOwner && !userHasReviewed && (
-                            <button className="post-review-button" onClick={handlePostReviewClick}>
+                            <button className={styles.postReviewButton} onClick={handlePostReviewClick}>
                                 Post Your Review
                             </button>
                         )}
@@ -105,12 +104,12 @@ const SpotDetail = () => {
                             const year = createdAt.toLocaleString('default', { year: 'numeric' });
 
                             return (
-                                <div key={index} className="review">
-                                    <div className="review-header">
-                                        <span className="review-user">{review.User?.firstName}</span>
+                                <div key={index} className={styles.review}>
+                                    <div className={styles.reviewHeader}>
+                                        <span className={styles.reviewUser}>{review.User?.firstName}</span>
                                     </div>
-                                    <h3 className='review-date'>{monthName} {year}</h3>
-                                    <p className="review-body">{review.review}</p>
+                                    <h3 className={styles.reviewDate}>{monthName} {year}</h3>
+                                    <p className={styles.reviewBody}>{review.review}</p>
                                     {review.userId === sessionUser?.id && (
                                         <OpenModalButton
                                             buttonText="Delete"
@@ -122,21 +121,21 @@ const SpotDetail = () => {
                         })}
                     </>
                 ) : (
-                    <div className="no-reviews">
-                        <IoStar className='star-icon' />
-                        <span className='rating'>New</span>
+                    <div className={styles.noReviews}>
+                        <IoStar className={styles.starIcon} />
+                        <span className={styles.rating}>New</span>
 
                         {!sessionUser ?
-                            (<div className="post-review-notice">
+                            (<div className={styles.postReviewNotice}>
                                 Please log in to post a review.
                             </div>) : (
                                 <>
                                     {!isOwner ? (
-                                        <div className="post-review-action">
-                                            <button className="post-review-button" onClick={handlePostReviewClick}>
+                                        <div className={styles.postReviewAction}>
+                                            <button className={styles.postReviewButton} onClick={handlePostReviewClick}>
                                                 Post Your Review
                                             </button>
-                                            <p className='first-review-message'>Be the first to post a review!</p>
+                                            <p className={styles.firstReviewMessage}>Be the first to post a review!</p>
                                         </div>
                                     ) : null}
                                 </>
@@ -149,6 +148,7 @@ const SpotDetail = () => {
 };
 
 export default SpotDetail;
+
 
 
 
