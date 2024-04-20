@@ -3,7 +3,7 @@
 ## Database Schema Design
 
 ![mt schema](./images/schema.png)
-`<insert database schema design here>`
+
 
 ## API Documentation
 
