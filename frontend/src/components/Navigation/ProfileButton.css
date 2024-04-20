@@ -27,7 +27,6 @@ ul>li {
     align-items: center;
     width: 100px;
     position: relative;
-    /* border: 1px solid black; */
     border-radius: 10px;
     width: auto;
 }
@@ -49,19 +48,15 @@ ul>li {
 
 .profile-dropdown.hidden {
     display: none;
-    /* Keep the dropdown hidden when not active */
 }
 
 .profile-dropdown:not(.hidden) {
     display: block;
-    /* Show the dropdown when active */
 }
 
 .profile-dropdown .auth-link {
     padding: 8px 12px;
-    /* Add some padding to the dropdown items */
     cursor: pointer;
-    /* Change cursor to pointer for better UX */
     list-style-type: none;
     color: #021826;
 }

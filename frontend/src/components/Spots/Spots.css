@@ -55,28 +55,24 @@
 @media only screen and (max-width: 1400px) {
     .spots-container .spot-link {
         width: calc(33.33% - 40px);
-        /* 3 column layout */
     }
 }
 
 @media only screen and (max-width: 900px) {
     .spots-container .spot-link {
         width: calc(50% - 40px);
-        /* 2 column layout */
     }
 }
 
 @media only screen and (max-width: 600px) {
     .spots-container .spot-link {
         width: calc(100% - 40px);
-        /* 1 column layout */
     }
 }
-}
+
 
 @media only screen and (min-width: 1201px) {
     .spots-container .spot-link {
         flex: 1 1 25%;
-        /* 4 column layout */
     }
 }
