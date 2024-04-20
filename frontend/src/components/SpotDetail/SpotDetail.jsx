@@ -93,7 +93,7 @@ const SpotDetail = () => {
                         </div>
 
                         {sessionUser && !isOwner && !userHasReviewed && (
-                            <button className={styles.postReviewButton} onClick={handlePostReviewClick}>
+                            <button className={styles.reviewButton} onClick={handlePostReviewClick}>
                                 Post Your Review
                             </button>
                         )}
@@ -132,7 +132,7 @@ const SpotDetail = () => {
                                 <>
                                     {!isOwner ? (
                                         <div className={styles.postReviewAction}>
-                                            <button className={styles.postReviewButton} onClick={handlePostReviewClick}>
+                                            <button className={styles.reviewButton} onClick={handlePostReviewClick}>
                                                 Post Your Review
                                             </button>
                                             <p className={styles.firstReviewMessage}>Be the first to post a review!</p>
