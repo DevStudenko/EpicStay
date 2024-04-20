@@ -1,33 +1,26 @@
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import { deleteSpot } from '../../store/spots';
+import styles from './DeleteSpotModal.module.css'
 
-import './DeleteSpotModal.css'
 
 const DeleteSpotModal = ({ spotId }) => {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
-  
-  const handleDeleteSpot = () => {
-    dispatch(deleteSpot(spotId))
-      .then(closeModal)
 
+  const handleDelete = () => {
+    dispatch(deleteSpot(spotId))
+      .then(closeModal);
   };
 
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <span className="close" onClick={closeModal}>&times;</span>
-        <h2>Confirm Delete</h2>
-        <p>Are you sure you want to delete this spot?</p>
-        <div className="modal-buttons">
-          <button id='yes' onClick={() => handleDeleteSpot()}>Yes</button>
-          <button id='no' onClick={(closeModal)}>No</button>
-        </div>
-      </div>
+    <div className={styles.modal}>
+      <h1 className={styles.header}>Confirm Delete</h1>
+      <p>Are you sure that you want to remove this spot from the listings?</p>
+      <button className={styles.button} onClick={handleDelete}>Yes (Delete Spot)</button>
+      <button className={styles.button_no} onClick={closeModal}>No (Keep Spot)</button>
     </div>
   );
-}
+};
 
-
-export default DeleteSpotModal
+export default DeleteSpotModal;

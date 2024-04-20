@@ -1,30 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaRegStar } from 'react-icons/fa';
+import { FaStar, FaRegStar } from 'react-icons/fa';
 import { createReview } from '../../store/reviews';
-import './CreateReview.css';
+import styles from './CreateReview.module.css'; // Assuming you have CSS module for styling
 
-const HandleInput = ({ rating, setRating }) => {
+
+const HandleInput = ({ rating, setRating, userHover, setUserHover }) => {
     const stars = [1, 2, 3, 4, 5];
+
     return (
-        <div className="rating-input">
-            {stars.map((star, index) => (
-                <FaRegStar
-                    key={index}
-                    size={30}
-                    color={rating >= star ? 'yellow' : 'grey'}
+        <div className={styles.ratingInput}>
+            {stars.map(star => (
+                <div
+                    key={star}
+                    onMouseEnter={() => setUserHover(star)}
+                    onMouseLeave={() => setUserHover(0)}
                     onClick={() => setRating(star)}
-                />
+                    className={styles.starContainer}
+                >
+                    {(userHover >= star || (!userHover && rating >= star)) ? (
+                        <FaStar size={30} className={styles.star} style={{ color: 'yellow' }} />
+                    ) : (
+                        <FaRegStar size={30} className={styles.star} style={{ color: 'grey' }} />
+                    )}
+                </div>
             ))}
-            <label>Stars</label>
         </div>
     );
 };
+
 
 const CreateReviewModal = ({ spotId, closeModal }) => {
     const dispatch = useDispatch();
     const [reviewBody, setReviewBody] = useState('');
     const [rating, setRating] = useState(0);
+    const [userHover, setUserHover] = useState(0);
     const [serverError, setServerError] = useState('');
     const [disabled, setDisabled] = useState(true);
     const sessionUser = useSelector((state) => state.session.user);
@@ -36,6 +46,7 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
     const resetModal = () => {
         setReviewBody('');
         setRating(0);
+        setUserHover(0);
         setServerError('');
         setDisabled(true);
         closeModal();
@@ -53,24 +64,32 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
             resetModal();
         } catch (err) {
             console.error(err);
-
+            setServerError(err.message || 'An error occurred');
         }
     };
 
     return (
-        <div className='review-modal-container'>
-            <h2>How was your stay?</h2>
-            {serverError && <p className="error-message">Server Error: {serverError}</p>}
+        <div className={styles.modalContainer}>
+            <h2 className={styles.modalTitle}>How was your stay?</h2>
+            {serverError && <p className={styles.errorMessage}>Server Error: {serverError}</p>}
             <textarea
+                className={styles.reviewInput}
                 placeholder="Leave your review here..."
                 value={reviewBody}
                 onChange={e => setReviewBody(e.target.value)}
+                rows={5}
             />
             <HandleInput
                 rating={rating}
                 setRating={setRating}
+                userHover={userHover}
+                setUserHover={setUserHover}
             />
-            <button disabled={disabled} onClick={handleSubmit}>
+            <button
+                className={styles.submitButton}
+                disabled={disabled}
+                onClick={handleSubmit}
+            >
                 Submit Your Review
             </button>
         </div>
@@ -78,4 +97,5 @@ const CreateReviewModal = ({ spotId, closeModal }) => {
 };
 
 export default CreateReviewModal;
+
 
