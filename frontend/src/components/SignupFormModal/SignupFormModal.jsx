@@ -26,30 +26,46 @@ const SignupFormModal = () => {
         setErrors({});
     }, [modalOpen]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (password === confirmPassword) {
-            setErrors({});
-            return dispatch(
-                sessionActions.signup({
-                    email,
-                    username,
-                    firstName,
-                    lastName,
-                    password
-                })
-            )
-                .then(closeModal)
-                .catch(async (res) => {
-                    const data = await res.json();
-                    if (data?.errors) {
-                        setErrors(data.errors);
-                    }
-                });
+        let newErrors = {};
+
+        // Validation checks
+        if (!email) newErrors.email = "Email is required";
+        if (!username) newErrors.username = "Username is required";
+        if (!firstName) newErrors.firstName = "First name is required";
+        if (!lastName) newErrors.lastName = "Last name is required";
+        if (!password) newErrors.password = "Password is required";
+        if (!confirmPassword) newErrors.confirmPassword = "Confirm password is required";
+        if (password !== confirmPassword) {
+            newErrors.confirmPassword = "Confirm Password field must be the same as the Password field";
         }
-        return setErrors({
-            confirmPassword: "Confirm Password field must be the same as the Password field"
-        });
+
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        try {
+            await dispatch(sessionActions.signup({
+                email,
+                username,
+                firstName,
+                lastName,
+                password
+            }));
+            closeModal();
+        } catch (res) {
+            const data = await res.json();
+
+            if (data?.errors) {
+                newErrors = { ...newErrors, ...data.errors };
+            } else {
+                newErrors.message = 'Something went wrong.Please try again.'
+            }
+            setErrors(newErrors);
+        }
     };
 
     return (
@@ -123,9 +139,10 @@ const SignupFormModal = () => {
                         required
                     />
                 </label>
-                <p className={styles.errors}>{errors.confirmPassword}</p>
+                <p className={styles.confirmError}>{errors.confirmPassword}</p>
                 <button className={styles.button} type="submit" disabled={!email || !username || !firstName || !lastName || !password || !confirmPassword}>Sign Up</button>
             </form>
+            <p className={styles.error}>{errors.message}</p>
         </div>
     );
 }

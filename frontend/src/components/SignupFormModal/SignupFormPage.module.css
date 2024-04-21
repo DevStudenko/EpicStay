@@ -54,4 +54,16 @@
 
 .error {
     color: red;
+    height: 24px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.confirmError {
+    color: red;
+    height: 32px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
 }
