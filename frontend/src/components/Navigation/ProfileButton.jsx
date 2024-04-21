@@ -7,11 +7,13 @@ import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './ProfileButton.module.css';
 
 const ProfileButton = ({ user }) => {
     const dispatch = useDispatch();
     const [showMenu, setShowMenu] = useState(false);
+    const navigate = useNavigate();
     const ulRef = useRef();
 
     const toggleMenu = (e) => {
@@ -41,7 +43,8 @@ const ProfileButton = ({ user }) => {
     const logout = (e) => {
         e.preventDefault();
         dispatch(sessionActions.logout());
-        setShowMenu(false); // Close menu when logging out
+        setShowMenu(false);
+        navigate('/');
     };
 
     // Ensure all class names are referenced using styles object
