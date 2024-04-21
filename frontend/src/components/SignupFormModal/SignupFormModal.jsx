@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import * as sessionActions from '../../store/session';
-import './SignupFormPage.css';
+import styles from './SignupFormPage.module.css'
 
 const SignupFormModal = () => {
     const dispatch = useDispatch();
@@ -53,40 +53,43 @@ const SignupFormModal = () => {
     };
 
     return (
-        <>
+        <div className={styles.main}>
             <h1>Sign Up</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <label className={styles.input_group}>
                     Email
                     <input
                         type="text"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        className={styles.input}
                         required
                     />
                 </label>
-                {errors.email && <p className='errors'>{errors.email}</p>}
-                <label>
+                <p className={styles.error}>{errors.email}</p>
+                <label className={styles.input_group}>
                     Username
                     <input
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        className={styles.input}
                         required
                     />
                 </label>
-                {errors.username && <p className='errors'>{errors.username}</p>}
-                <label>
+                <p className={styles.error}>{errors.username}</p>
+                <label className={styles.input_group}>
                     First Name
                     <input
                         type="text"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
+                        className={styles.input}
                         required
                     />
                 </label>
-                {errors.firstName && <p className='errors'>{errors.firstName}</p>}
-                <label>
+                <p className={styles.error}>{errors.firstName}</p>
+                <label className={styles.input_group}>
                     Last Name
                     <input
                         type="text"
@@ -94,10 +97,11 @@ const SignupFormModal = () => {
                         onChange={(e) => setLastName(e.target.value)}
                         required
                         autoComplete="family-name"
+                        className={styles.input_group}
                     />
                 </label>
-                {errors.lastName && <p className='errors'>{errors.lastName}</p>}
-                <label>
+                <p className='errors'>{errors.lastName}</p>
+                <label className={styles.input_group}>
                     Password
                     <input
                         type="password"
@@ -105,24 +109,24 @@ const SignupFormModal = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         autoComplete="new-password"
+                        className={styles.input_group}
                     />
                 </label>
-                {errors.password && <p className='errors'>{errors.password}</p>}
-                <label>
+                <p className='errors'>{errors.password}</p>
+                <label className={styles.input_group}>
                     Confirm Password
                     <input
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
+                        className={styles.input}
                         required
                     />
                 </label>
-                {errors.confirmPassword && (
-                    <p>{errors.confirmPassword}</p>
-                )}
-                <button type="submit" disabled={!email || !username || !firstName || !lastName || !password || !confirmPassword}>Sign Up</button>
+                <p className={styles.errors}>{errors.confirmPassword}</p>
+                <button className={styles.button} type="submit" disabled={!email || !username || !firstName || !lastName || !password || !confirmPassword}>Sign Up</button>
             </form>
-        </>
+        </div>
     );
 }
 
