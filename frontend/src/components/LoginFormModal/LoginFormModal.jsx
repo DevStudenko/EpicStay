@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
-import './LoginForm.css';
+import styles from './LoginForm.module.css';
 
 
 
@@ -45,10 +45,10 @@ const LoginFormModal = () => {
     };
 
     return (
-        <>
+        <div className={styles.main}>
             <h1>Log In</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <label className={styles.input_group}>
                     Username or Email
                     <input
                         type="text"
@@ -56,12 +56,13 @@ const LoginFormModal = () => {
                         onChange={(e) => setCredential(e.target.value)}
                         required
                         autoComplete="username"
+                        className={styles.input}
                     />
                 </label>
                 {errors.credential && (
-                    <p className='errors'>{errors.credential}</p>
+                    <p className={styles.error}>{errors.credential}</p>
                 )}
-                <label>
+                <label className={styles.input_group}>
                     Password
                     <input
                         type="password"
@@ -69,18 +70,19 @@ const LoginFormModal = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         autoComplete="new-password"
+                        className={styles.input}
                     />
                 </label>
                 {errors.password && (
-                    <p className='errors'>{errors.password}</p>
+                    <p className={styles.error}>{errors.password}</p>
                 )}
                 {errors.message && (
-                    <p className='errors'>{errors.message}</p>
+                    <p className={styles.error}>{errors.message}</p>
                 )}
-                <button disabled={credential.length < 4 || password.length < 6} type="submit">Log In</button>
-                <button className='demo-login' onClick={handleDemoLogin}>Demo Login</button>
+                <button className={styles.button} disabled={credential.length < 4 || password.length < 6} type="submit">Log In</button>
+                <button className={styles.demo} onClick={handleDemoLogin}>Demo Login</button>
             </form>
-        </>
+        </div>
     );
 }
 

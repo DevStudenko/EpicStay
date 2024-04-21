@@ -48,17 +48,38 @@ ul>li {
     display: block;
 }
 
-.profile_dropdown .auth-link {
-    padding: 8px 12px;
-    cursor: pointer;
-    list-style-type: none;
-    color: #021826;
+
+.authMenu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: 90px;
+    top: 65px;
+    padding: 0;
+    width: 120px;
+    border: 1px lightgray solid;
+    padding: 1em;
+    background: white;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    border-radius: 1em;
+    z-index: 1;
 }
 
-.profile_dropdown .auth-link:hover {
+.authLink {
+    cursor: pointer;
+    padding: 8px 12px;
+    display: block;
+    color: #021826;
+    width: 80px;
+
+}
+
+.authLink:hover {
     background-color: #69E0E8;
     font-weight: 600;
-    color: white
+    color: white;
 }
 
 

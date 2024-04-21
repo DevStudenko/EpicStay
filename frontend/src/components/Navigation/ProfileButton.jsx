@@ -78,18 +78,20 @@ const ProfileButton = ({ user }) => {
                         </li>
                     </div>
                 ) : (
-                    <>
+                    <div className={styles.authMenu}>
                         <OpenModalMenuItem
                             itemText="Log In"
                             onItemClick={() => setShowMenu(false)}
                             modalComponent={<LoginFormModal />}
+                            authLink={styles.authLink}
                         />
                         <OpenModalMenuItem
                             itemText="Sign Up"
                             onItemClick={() => setShowMenu(false)}
                             modalComponent={<SignupFormModal />}
+                            authLink={styles.authLink}
                         />
-                    </>
+                    </div>
                 )}
             </ul>
         </>
