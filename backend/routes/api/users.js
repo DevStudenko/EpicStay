@@ -73,7 +73,7 @@ router.post(
                 });
             }
             // Handle other errors
-            return res.status(500).json({ message: "An error occurred" });
+            return res.status(500).json({ message: "Something went wrong. Please try again." });
         }
     }
 );
