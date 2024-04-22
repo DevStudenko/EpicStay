@@ -40,6 +40,7 @@ const ManageSpots = () => {
               </NavLink>
               <div className={styles.spotActions}>
                 <button
+                  className={styles.updateBtn}
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate(`/spots/${id}/edit`);
@@ -48,6 +49,7 @@ const ManageSpots = () => {
                   Update
                 </button>
                 <OpenModalButton
+                  className={styles.deleteBtn}
                   buttonText="Delete"
                   modalComponent={<DeleteSpotModal spotId={id} />}
                 />

@@ -89,7 +89,7 @@ const UpdateSpotForm = () => {
 
   return (sessionUser ? (
     <main className={styles.main}>
-      <h1 className={styles.title}>Create a new Spot</h1>
+      <h1 className={styles.title}>Update your Spot</h1>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.section}>
           <h3 className={styles.subtitle}>Where&apos;s your place located?</h3>
@@ -228,7 +228,7 @@ const UpdateSpotForm = () => {
         </div>
 
 
-        <button type="submit" className={styles.button}>Create Spot</button>
+        <button type="submit" className={styles.button}>Update your Spot</button>
       </form>
 
     </main>

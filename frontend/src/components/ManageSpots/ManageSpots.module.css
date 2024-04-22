@@ -7,6 +7,24 @@
     margin-top: 20px;
 }
 
+.spotLink {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 6px 18px -9px rgba(0, 0, 0, 0.75);
+    transition: transform 100ms ease-in;
+    cursor: pointer;
+    margin-bottom: 20px;
+    text-decoration: none;
+    border-radius: 10px;
+    color: inherit;
+}
+
+.spotWrapper {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .grid {
     padding: 3em;
     display: grid;
@@ -37,37 +55,17 @@
     }
 }
 
-.spotLink {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0px 6px 18px -9px rgba(0, 0, 0, 0.75);
-    transition: transform 100ms ease-in;
-    cursor: pointer;
-    margin-bottom: 20px;
-    text-decoration: none;
-    color: inherit;
-}
+
+
 
 .spotLink:hover {
     transform: scale(1.03);
 }
 
-.newSpotLink {
-    text-decoration: none;
-    font-weight: bold;
-    color: #50b3b9;
-    margin-right: 10px;
-}
-
-.newSpotLink:hover {
-    text-decoration: underline;
-
-}
-
 .spotImg {
     object-fit: cover;
     width: 100%;
-    height: 214px;
+    height: auto;
     display: block;
 }
 
@@ -81,6 +79,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
 }
 
 .spotPrice {
@@ -98,7 +97,7 @@
     margin-bottom: 8px;
 }
 
-.star-icon {
+.starIcon {
     color: #ffd700;
     font-size: 20px;
     margin-right: 5px;
@@ -106,13 +105,38 @@
 
 .spotActions {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     margin-top: 10px;
+    width: 200px;
+    padding-bottom: 20px;
 }
 
-.spotWrapper {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 10px;
+.updateBtn {
+    background-color: #69E0E8;
+    color: white;
+    border: none;
     border-radius: 10px;
+    padding: 5px;
+    width: 80px;
+}
+
+.updateBtn:hover {
+    cursor: pointer;
+    background-color: #50b3b9;
+    font-weight: bold;
+}
+
+.deleteBtn {
+    background-color: #ff4500;
+    cursor: pointer;
+    width: 80px;
+    padding: 5px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+}
+
+.deleteBtn:hover {
+    background-color: #e03c00;
+    font-weight: bold;
 }

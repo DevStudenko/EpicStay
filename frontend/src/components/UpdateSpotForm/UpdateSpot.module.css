@@ -30,17 +30,20 @@
 .button {
     color: white;
     width: 100%;
+    border: none;
     border-radius: 0.5em;
-    background-color: #FF7043;
+    background-color: #69E0E8;
     padding: 1em 2em;
     transition: all 0.1s ease-in-out;
-    margin-top: 1em
+    margin-top: 1em;
+    font-weight: bold;
+    margin-top: 50px;
 }
 
 .button:hover,
 .button:focus {
     transform: scale(1.02);
-    background-color: #FF5722
+    background-color: #50b3b9
 }
 
 .button:disabled {

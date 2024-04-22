@@ -119,14 +119,14 @@ ul>li {
 
 .manage_spots_link {
     text-decoration: none;
+    color: #69E0E8;
 }
 
-.manage_spots_link {
-    text-decoration: none;
-}
 
 .manage_spots_link:hover {
     text-decoration: underline;
+    font-weight: bold;
+    color: #50b3b9;
 }
 
 .profile_dropdown .profile_logout_button_container {
