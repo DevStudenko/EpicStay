@@ -15,15 +15,10 @@ const DeleteReviewModal = ({ reviewId, spotId }) => {
 
     return (
         <div className={styles.modal}>
-            <div className={styles.modalContent}>
-                <span className={styles.close} onClick={closeModal}>&times;</span>
-                <h2>Confirm Delete</h2>
-                <p>Are you sure you want to delete this review?</p>
-                <div className={styles.modalButtons}>
-                    <button className={styles.button} onClick={handleDelete}>Yes (Delete Review)</button>
-                    <button className={styles.button_no} onClick={closeModal}>No (Keep Review)</button>
-                </div>
-            </div>
+            <h1 className={styles.header}>Confirm Delete</h1>
+            <p>Are you sure you want to delete this review?</p>
+            <button className={styles.button} onClick={handleDelete}>Yes (Delete Review)</button>
+            <button className={styles.button_no} onClick={closeModal}>No (Keep Review)</button>
         </div>
     );
 }

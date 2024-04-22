@@ -112,6 +112,7 @@ const SpotDetail = () => {
                                     <p className={styles.reviewBody}>{review.review}</p>
                                     {review.userId === sessionUser?.id && (
                                         <OpenModalButton
+                                            className={styles.deleteReviewBtn}
                                             buttonText="Delete"
                                             modalComponent={<DeleteReviewModal spotId={spotId} reviewId={review.id} />}
                                         />
