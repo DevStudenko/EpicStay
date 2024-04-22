@@ -1,4 +1,3 @@
-/* SpotDetail.module.css */
 .spotDetail {
     margin: 0 auto;
     max-width: 1000px;
@@ -127,10 +126,17 @@
     margin-right: 5px;
 }
 
-.mainImage {
+.mainImage,
+.mainImageHalf {
     grid-column: 1;
     width: 100%;
     height: 100%;
+}
+
+.mainImageHalf {
+    width: 50%;
+    /* Only 50% width for a single image */
+    justify-self: start;
 }
 
 .nestedGrid {
@@ -162,8 +168,12 @@
     object-fit: cover;
 }
 
-.spotImages.singleImage .mainImage {
+.spotImages.singleImage .mainImageHalf {
     grid-column: 1 / -1;
+    /* Takes full row but only fills 50% width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .spotImages.singleImage .nestedGrid {

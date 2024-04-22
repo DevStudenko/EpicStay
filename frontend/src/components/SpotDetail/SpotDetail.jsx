@@ -46,16 +46,24 @@ const SpotDetail = () => {
                 <h1 className={styles.spotName}>{spot.name}</h1>
                 <div className={styles.locationInfo}>{spot.city}, {spot.state}, {spot.country}</div>
             </div>
-            <div className={`${styles.spotImages} ${spot.SpotImages.length === 1 ? styles.singleImage : ''}`}>
-                <div className={styles.mainImage}>
-                    <img src={spot.previewImage} alt="Main Image" />
-                </div>
-                {spot.SpotImages.length > 1 && (
-                    <div className={styles.nestedGrid}>
-                        {spot.SpotImages.slice(1).map((image, index) => (
-                            <img key={index} className={styles.smallImage} src={image.url} alt={`Image ${index + 2}`} />
-                        ))}
+            <div className={`${styles.spotImages} ${spot.SpotImages.length === 1 ? styles.singleImage : ''} ${spot.SpotImages.length > 1 ? styles.multipleImages : ''}`}>
+                {spot.SpotImages.length === 1 ? (
+                    <div className={styles.mainImageHalf}>
+                        <img src={spot.SpotImages[0].url} alt="Main Image" />
                     </div>
+                ) : (
+                    <>
+                        <div className={styles.mainImage}>
+                            <img src={spot.previewImage} alt="Main Image" />
+                        </div>
+                        {spot.SpotImages.length > 1 && (
+                            <div className={styles.nestedGrid}>
+                                {spot.SpotImages.slice(1).map((image, index) => (
+                                    <img key={index} className={styles.smallImage} src={image.url} alt={`Image ${index + 2}`} />
+                                ))}
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
             <div className={styles.spotDetailInfo}>
