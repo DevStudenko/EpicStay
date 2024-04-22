@@ -15,7 +15,7 @@ const Spots = () => {
     }, [dispatch]);
 
     return (
-        <div className={styles.grid}> {/* Use the .grid class here for the container */}
+        <div className={styles.grid}>
             {spotsList?.map(({ city, state, avgStarRating, previewImage, price, id, name }) => (
                 <NavLink to={`/spots/${id}`} key={id} className={styles.spotLink}>
                     <div className={styles.spot} title={name}>

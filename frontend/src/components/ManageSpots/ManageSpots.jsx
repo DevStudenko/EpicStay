@@ -5,9 +5,7 @@ import DeleteSpotModal from "../DeleteSpotModal/DeleteSpotModal";
 import OpenModalButton from '../OpenModalButton';
 import { IoStar } from "react-icons/io5";
 import { NavLink, useNavigate } from "react-router-dom";
-
-
-import './ManageSpots.css';
+import styles from './ManageSpots.module.css';
 
 const ManageSpots = () => {
   const dispatch = useDispatch();
@@ -21,27 +19,26 @@ const ManageSpots = () => {
     dispatch(fetchUserSpots());
   }, [dispatch, sessionUser.id]);
 
-
   return (
-    <div className="spots-wrapper">
+    <div className={styles.spotsWrapper}>
       <h1>Manage Spots</h1>
-      <div className='spots-container'>
-        {sessionUser && sortedUserSpots.length ?
-          sortedUserSpots.map(({ city, state, avgStarRating, previewImage, price, id, name }) => (
-            <div className='spot-wrapper' key={id}>
-              <NavLink to={`/spots/${id}`} className='spot-link'>
-                <div className='spot' title={name}>
-                  <img src={previewImage} alt="spotImage" />
-                  <div className='spot-info'>
-                    <div className='spot-loc-rating'>
-                      <h3 className='spot-location'>{city}, {state}</h3>
-                      <h3 className='spot-rating'><IoStar className='star-icon' />{avgStarRating ? avgStarRating.toFixed(1) : "New"}</h3>
+      {sortedUserSpots.length > 0 ? (
+        <div className={styles.grid}>
+          {sortedUserSpots.map(({ city, state, avgStarRating, previewImage, price, id, name }) => (
+            <div key={id} className={styles.spotWrapper}>
+              <NavLink to={`/spots/${id}`} className={styles.spotLink}>
+                <div className={styles.spot} title={name}>
+                  <img className={styles.spotImg} src={previewImage} alt="Spot image" />
+                  <div className={styles.spotInfo}>
+                    <div className={styles.spotLocRating}>
+                      <h3 className={styles.spotLocation}>{city}, {state}</h3>
+                      <h3 className={styles.spotRating}><IoStar className={styles.starIcon} />{avgStarRating ? avgStarRating.toFixed(1) : "New"}</h3>
                     </div>
-                    <h3 className='spot-price'>${price} night</h3>
+                    <h3 className={styles.spotPrice}>${price} per night</h3>
                   </div>
                 </div>
               </NavLink>
-              <div className="manage-spot-actions">
+              <div className={styles.spotActions}>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -56,14 +53,17 @@ const ManageSpots = () => {
                 />
               </div>
             </div>
-          )) :
-          <NavLink to="/spots/new" className="create-new-spot-link">
-            Create a New Spot
-          </NavLink>}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <NavLink to="/spots/new" className={styles.newSpotLink}>
+          Create a New Spot
+        </NavLink>
+      )}
     </div>
   );
 };
 
 export default ManageSpots;
+
 
