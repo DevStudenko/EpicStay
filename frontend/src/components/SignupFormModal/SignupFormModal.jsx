@@ -140,7 +140,7 @@ const SignupFormModal = () => {
                     />
                 </label>
                 <p className={styles.confirmError}>{errors.confirmPassword}</p>
-                <button className={styles.button} type="submit" disabled={!email || !username || !firstName || !lastName || !password || !confirmPassword}>Sign Up</button>
+                <button className={styles.button} type="submit" disabled={!email || !username || !firstName || !lastName || !password || !confirmPassword || password.length < 6}>Sign Up</button>
             </form>
             <p className={styles.error}>{errors.message}</p>
         </div>
