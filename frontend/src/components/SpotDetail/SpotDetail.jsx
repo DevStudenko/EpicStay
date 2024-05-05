@@ -90,16 +90,15 @@ const SpotDetail = () => {
                 </div>
             </div>
 
-            <div className={styles.reviewsSection}>
-                {hasReviews ? (
-                    <>
-                        <div className={styles.reviewRating}>
-                            <IoStar className={styles.starIcon} />
-                            <span className={styles.rating}>{spot.avgStarRating ? spot.avgStarRating.toFixed(1) : "New"}</span>
-                            <span className={styles.divider}>.</span>
-                            <span className={styles.numReviews}>{reviewCountText}</span>
-                        </div>
-
+            {hasReviews ? (
+                <div className="reviewsInfoWrapper">
+                    <div className={styles.reviewRating}>
+                        <IoStar className={styles.starIcon} />
+                        <span className={styles.rating}>{spot.avgStarRating ? spot.avgStarRating.toFixed(1) : "New"}</span>
+                        <span className={styles.divider}>.</span>
+                        <span className={styles.numReviews}>{reviewCountText}</span>
+                    </div>
+                    <div className={styles.reviewsContainer}>
                         {sessionUser && !isOwner && !userHasReviewed && (
                             <button className={styles.reviewButton} onClick={handlePostReviewClick}>
                                 Post Your Review
@@ -128,30 +127,30 @@ const SpotDetail = () => {
                                 </div>
                             )
                         })}
-                    </>
-                ) : (
-                    <div className={styles.noReviews}>
-                        <IoStar className={styles.starIcon} />
-                        <span className={styles.rating}>New</span>
-
-                        {!sessionUser ?
-                            (<div className={styles.postReviewNotice}>
-                                Please log in to post a review.
-                            </div>) : (
-                                <>
-                                    {!isOwner ? (
-                                        <div className={styles.postReviewAction}>
-                                            <button className={styles.reviewButton} onClick={handlePostReviewClick}>
-                                                Post Your Review
-                                            </button>
-                                            <p className={styles.firstReviewMessage}>Be the first to post a review!</p>
-                                        </div>
-                                    ) : null}
-                                </>
-                            )}
                     </div>
-                )}
-            </div>
+                </div>
+            ) : (
+                <div className={styles.noReviews}>
+                    <IoStar className={styles.starIcon} />
+                    <span className={styles.rating}>New</span>
+
+                    {!sessionUser ?
+                        (<div className={styles.postReviewNotice}>
+                            Please log in to post a review.
+                        </div>) : (
+                            <>
+                                {!isOwner ? (
+                                    <div className={styles.postReviewAction}>
+                                        <button className={styles.reviewButton} onClick={handlePostReviewClick}>
+                                            Post Your Review
+                                        </button>
+                                        <p className={styles.firstReviewMessage}>Be the first to post a review!</p>
+                                    </div>
+                                ) : null}
+                            </>
+                        )}
+                </div>
+            )}
         </div>
     );
 };
