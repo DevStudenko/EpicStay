@@ -15,6 +15,7 @@
 .spotDescription {
     font-size: 15pt;
     text-align: left;
+    overflow-wrap: break-word;
 }
 
 .hostInfo {
