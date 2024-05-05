@@ -42,7 +42,7 @@ const CreateNewSpotForm = () => {
         setErrors(newErrors);
 
         // If there are any frontend errors, stop here
-        if (Object.keys(errors).length > 0) return;
+        if (Object.keys(newErrors).length > 0) return;
 
         // Proceed with backend submission if frontend validations pass
         dispatch(createSpot({
