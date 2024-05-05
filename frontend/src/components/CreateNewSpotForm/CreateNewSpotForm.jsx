@@ -66,7 +66,6 @@ const CreateNewSpotForm = () => {
                     console.error("Failed to add images to spot:", err);
                 });
         }).catch(async (res) => {
-            console.log('this is inside catch')
             if (res.ok === false) {
                 const data = await res.json();
                 console.log(data)
