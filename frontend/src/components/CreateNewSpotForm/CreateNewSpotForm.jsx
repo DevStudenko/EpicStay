@@ -68,7 +68,6 @@ const CreateNewSpotForm = () => {
         }).catch(async (res) => {
             if (res.ok === false) {
                 const data = await res.json();
-                console.log(data)
                 if (data && data.errors) {
                     setErrors(prevErrors => ({ ...prevErrors, ...data.errors }));
                 }

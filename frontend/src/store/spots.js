@@ -130,7 +130,7 @@ export const updateSpot = (spotId, spotData) => async (dispatch) => {
 
 const initialState = {}
 
-const spotsReducer = (state = initialState, action) => {
+export const spotsReducer = (state = initialState, action) => {
     let newState = {};
     let spotDetails = '';
     let spotId = '';
@@ -215,7 +215,3 @@ const spotsReducer = (state = initialState, action) => {
 };
 
 export default spotsReducer;
-
-
-
-

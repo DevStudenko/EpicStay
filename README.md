@@ -1,4 +1,4 @@
-# `Epic Stay`
+# Epic Stay
 
 ## Database Schema Design
 
